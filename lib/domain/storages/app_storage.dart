@@ -43,4 +43,7 @@ abstract class AppStorage {
 
   /// Removes the value associated with the given key.
   Future<void> remove(String key);
+
+  /// Removes all values from the storage.
+  Future<void> clear();
 }

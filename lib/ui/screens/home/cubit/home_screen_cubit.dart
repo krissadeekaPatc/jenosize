@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jenosize/data/models/campaign.dart';
 import 'package:jenosize/data/models/point_history.dart';
+import 'package:jenosize/data/models/user.dart';
 import 'package:jenosize/domain/core/result.dart';
 import 'package:jenosize/domain/repositories/campaign_repository.dart';
 import 'package:jenosize/ui/cubits/session/session_cubit.dart';
@@ -30,31 +31,42 @@ class HomeScreenCubit extends Cubit<HomeScreenState> {
   }
 
   Future<void> joinCampaign(Campaign? campaign) async {
-    if (campaign == null) return;
+    final user = sessionCubit.state.user;
+    final campaignId = campaign?.id;
+
+    if (campaign == null || campaignId == null || user == null) return;
+
     emit(state.copyWith(status: HomeScreenStatus.loading));
 
-    final result = await campaignRepository.joinCampaign(campaign.id!);
+    final result = await campaignRepository.joinCampaign(campaignId);
 
     switch (result) {
       case Success():
-        final pointHistory = PointHistory(
-          id: campaign.id,
-          points: campaign.pointsReward,
-          title: campaign.title,
-          userId: sessionCubit.state.user?.id,
-          createdAt: DateTime.now(),
-        );
-        sessionCubit.addJoinedCampaign(campaign.id!);
-        sessionCubit.addPointHistory(pointHistory);
-        sessionCubit.setUser(
-          sessionCubit.state.user?.copyWith(
-            totalPoints:
-                sessionCubit.state.user!.totalPoints! + campaign.pointsReward!,
-          ),
-        );
-        emit(state.ready());
-      case Failure(error: final error):
+        _handleJoinSuccess(campaign, campaignId, user);
+      case Failure(:final error):
         emit(state.failure(error));
     }
+  }
+
+  void _handleJoinSuccess(Campaign campaign, String campaignId, User user) {
+    final pointsReward = campaign.pointsReward ?? 0;
+
+    final pointHistory = PointHistory(
+      id: campaignId,
+      points: pointsReward,
+      title: campaign.title,
+      userId: user.id,
+      createdAt: DateTime.now(),
+    );
+
+    final updatedUser = user.copyWith(
+      totalPoints: (user.totalPoints ?? 0) + pointsReward,
+    );
+
+    sessionCubit.addJoinedCampaign(campaignId);
+    sessionCubit.addPointHistory(pointHistory);
+    sessionCubit.setUser(updatedUser);
+
+    emit(state.ready());
   }
 }

@@ -1,7 +1,7 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jenosize/data/storages/secure_storage_impl.dart';
 import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:jenosize/domain/storages/secure_storage.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Future<SecureStorage> initializeSecureStorage(AppStorage storage) async {
   final fss = const FlutterSecureStorage(
@@ -17,7 +17,7 @@ Future<SecureStorage> initializeSecureStorage(AppStorage storage) async {
   );
   if (firstLaunchEpoch == null) {
     await secureStorage.deleteAll();
-
+    await storage.clear();
     final now = DateTime.now();
     await storage.setInt(
       StorageKey.firstOpenEpoch.name,

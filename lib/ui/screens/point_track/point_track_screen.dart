@@ -4,6 +4,7 @@ import 'package:jenosize/data/models/point_history.dart';
 import 'package:jenosize/ui/cubits/session/session_cubit.dart';
 import 'package:jenosize/ui/cubits/session/session_state.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/extensions/num_extension.dart';
 import 'package:jenosize/ui/screens/point_track/cubit/point_track_screen_cubit.dart';
 import 'package:jenosize/ui/screens/point_track/cubit/point_track_screen_state.dart';
 import 'package:jenosize/ui/screens/point_track/widgets/transaction_item.dart';
@@ -109,7 +110,7 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
       textBaseline: TextBaseline.alphabetic,
       children: [
         Text(
-          '$totalPoints',
+          totalPoints.thousandSeparated,
           style: AppTextStyle.w800(40).copyWith(
             color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),

@@ -17,19 +17,12 @@ class CampaignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = context.colorScheme.surface;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      color: context.colorScheme.surface,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            offset: const Offset(0, 8),
-            blurRadius: 20,
-          ),
-        ],
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(

@@ -113,7 +113,10 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xff8b5cf6), Color(0xffd946ef)],
+          colors: [
+            Color(0xff8b5cf6),
+            Color(0xffd946ef),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -122,7 +125,11 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.stars_rounded, color: Colors.white, size: 40),
+          const Icon(
+            Icons.stars_rounded,
+            color: Colors.white,
+            size: 40,
+          ),
           const SizedBox(height: 40),
           Text(
             '${user?.firstName ?? ''} ${user?.lastName ?? ''}'.toUpperCase(),
@@ -131,7 +138,9 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
           const SizedBox(height: 4),
           Text(
             context.l10n.membership_status_premium,
-            style: AppTextStyle.w600(14).copyWith(color: Colors.white),
+            style: AppTextStyle.w600(14).copyWith(
+              color: Colors.white,
+            ),
           ),
         ],
       ),

@@ -92,6 +92,11 @@ class AppStorageImpl implements AppStorage {
     return _sharedPrefs.remove(key);
   }
 
+  @override
+  Future<void> clear() {
+    return _sharedPrefs.clear();
+  }
+
   void _log(
     String message, {
     Object? error,

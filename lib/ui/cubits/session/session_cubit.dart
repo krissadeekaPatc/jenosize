@@ -11,6 +11,20 @@ class SessionCubit extends Cubit<SessionState> {
     _initialize();
   }
 
+  Future<void> _initialize() async {
+    final user = await _loadUser();
+
+    if (user == null) {
+      clearData();
+      return;
+    }
+
+    await Future.wait([
+      _loadJoinedCampaigns(),
+      _loadPointHistories(),
+    ]);
+  }
+
   void setUser(User? newValue) {
     if (newValue == null) {
       clearData();
@@ -28,28 +42,26 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void addPointHistory(PointHistory? history) {
-    if (state.user == null) return;
+    if (state.user == null || history == null) return;
 
-    final histories = [history, ...state.pointHistories];
-    _savePointHistories(histories);
-    emit(state.copyWith(pointHistories: histories));
+    setPointHistories([history, ...state.pointHistories]);
+  }
+
+  void addJoinedCampaign(String id) {
+    final updatedIds = Set<String>.from(state.joinedCampaignIds)..add(id);
+
+    emit(state.copyWith(joinedCampaignIds: updatedIds));
+
+    appStorage.setJson(StorageKey.joinedCampaignIds.name, {
+      'ids': updatedIds.toList(),
+    });
   }
 
   void clearData() {
     appStorage.remove(StorageKey.user.name);
     appStorage.remove(StorageKey.pointHistory.name);
+    appStorage.remove(StorageKey.joinedCampaignIds.name);
     emit(state.clearData());
-  }
-
-  Future<void> _initialize() async {
-    final user = await _loadUser();
-
-    if (user == null) {
-      clearData();
-      return;
-    }
-    await _loadJoinedCampaigns();
-    await _loadPointHistories();
   }
 
   Future<User?> _loadUser() async {
@@ -65,8 +77,10 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> _loadPointHistories() async {
     final jsonMap = await appStorage.getJson(StorageKey.pointHistory.name);
-    if (jsonMap != null && jsonMap['data'] is List) {
-      final histories = (jsonMap['data'] as List)
+    final list = jsonMap?['data'] as List?;
+
+    if (list != null) {
+      final histories = list
           .map((e) => PointHistory.fromJson(e as Map<String, dynamic>))
           .toList();
       emit(state.copyWith(pointHistories: histories));
@@ -74,29 +88,20 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> _loadJoinedCampaigns() async {
-    final Map<String, dynamic>? json = await appStorage.getJson(
-      StorageKey.joinedCampaignIds.name,
-    );
-    final List<dynamic>? list = json?['ids'];
+    final jsonMap = await appStorage.getJson(StorageKey.joinedCampaignIds.name);
+    final list = jsonMap?['ids'] as List?;
+
     if (list != null) {
       emit(state.copyWith(joinedCampaignIds: list.cast<String>().toSet()));
     }
-  }
-
-  void addJoinedCampaign(String id) async {
-    final updatedIds = Set<String>.from(state.joinedCampaignIds)..add(id);
-    await appStorage.setJson(StorageKey.joinedCampaignIds.name, {
-      'ids': updatedIds.toList(),
-    });
-    emit(state.copyWith(joinedCampaignIds: updatedIds));
   }
 
   void _saveUser(User user) {
     appStorage.setJson(StorageKey.user.name, user.toJson());
   }
 
-  void _savePointHistories(List<PointHistory?> histories) async {
-    await appStorage.setJson(StorageKey.pointHistory.name, {
+  void _savePointHistories(List<PointHistory?> histories) {
+    appStorage.setJson(StorageKey.pointHistory.name, {
       'data': histories.map((e) => e?.toJson()).toList(),
     });
   }
