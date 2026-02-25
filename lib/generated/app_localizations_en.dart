@@ -52,6 +52,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home_button_join_now => 'Join Now';
 
   @override
+  String get home_button_joined => 'Joined';
+
+  @override
   String get point_track_title => 'Point History';
 
   @override
@@ -133,4 +136,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_language_th => 'Thai';
+
+  @override
+  String get home_alert_join_title => 'Join Campaign';
+
+  @override
+  String get home_alert_join_message =>
+      'Are you sure you want to join this campaign?';
 }

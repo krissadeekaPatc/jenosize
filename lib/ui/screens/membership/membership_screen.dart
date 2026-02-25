@@ -60,31 +60,31 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
             ),
             centerTitle: true,
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                if (isMember) ...[
-                  _buildWelcomeMessage(user?.firstName),
-                  const SizedBox(height: 16),
-                  _buildMembershipCard(user),
-                  const SizedBox(height: 32),
-                  _buildReferSection(user),
-                ] else ...[
-                  _buildJoinSection(),
-                ],
-              ],
-            ),
-          ),
+          body: _buildBody(isMember, user),
         );
       },
     );
   }
 
-  Widget _buildWelcomeMessage(String? name) {
-    return Text(
-      context.l10n.membership_welcome_back(name ?? ''),
-      style: AppTextStyle.w700(24),
+  Widget _buildBody(bool isMember, User? user) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          if (isMember) ...[
+            Text(
+              context.l10n.membership_welcome_back(user?.firstName ?? ''),
+              style: AppTextStyle.w700(24),
+            ),
+            const SizedBox(height: 16),
+            _buildMembershipCard(user),
+            const SizedBox(height: 32),
+            _buildReferSection(user?.id ?? ''),
+          ] else ...[
+            _buildJoinSection(),
+          ],
+        ],
+      ),
     );
   }
 
@@ -93,10 +93,7 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
       children: [
         const Icon(Icons.card_membership, size: 80, color: Colors.grey),
         const SizedBox(height: 16),
-        Text(
-          context.l10n.membership_join_promo,
-          textAlign: TextAlign.center,
-        ),
+        Text(context.l10n.membership_join_promo, textAlign: TextAlign.center),
         const SizedBox(height: 24),
         SizedBox(
           width: double.infinity,
@@ -125,11 +122,7 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.stars_rounded,
-            color: Colors.white,
-            size: 40,
-          ),
+          const Icon(Icons.stars_rounded, color: Colors.white, size: 40),
           const SizedBox(height: 40),
           Text(
             '${user?.firstName ?? ''} ${user?.lastName ?? ''}'.toUpperCase(),
@@ -138,18 +131,14 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
           const SizedBox(height: 4),
           Text(
             context.l10n.membership_status_premium,
-            style: AppTextStyle.w600(
-              14,
-            ).copyWith(color: Colors.white),
+            style: AppTextStyle.w600(14).copyWith(color: Colors.white),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildReferSection(User? user) {
-    final String referralCode = user?.id ?? '';
-
+  Widget _buildReferSection(String code) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -171,56 +160,56 @@ class _MembershipScreenViewState extends State<MembershipScreenView> {
             style: AppTextStyle.w400(16).copyWith(color: Colors.grey),
           ),
           const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: context.colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: context.colorScheme.primary.withValues(alpha: 0.5),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    referralCode,
-                    style: AppTextStyle.w800(20).copyWith(
-                      color: context.colorScheme.primary,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: referralCode));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(context.l10n.membership_copy_success),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.copy_rounded),
-                  color: context.colorScheme.primary,
-                ),
-              ],
-            ),
-          ),
+          _buildReferralCodeBox(code),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
             height: 50,
             child: FilledButton.icon(
-              onPressed: () {
-                SharePlus.instance.share(
-                  ShareParams(
-                    text: context.l10n.membership_share_text(referralCode),
-                  ),
-                );
-              },
+              onPressed: () => SharePlus.instance.share(
+                ShareParams(
+                  text: context.l10n.membership_share_text(code),
+                ),
+              ),
               icon: const Icon(Icons.share_rounded),
               label: Text(context.l10n.membership_button_share),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReferralCodeBox(String code) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: context.colorScheme.primary.withValues(alpha: 0.5),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              code,
+              style: AppTextStyle.w800(20).copyWith(
+                color: context.colorScheme.primary,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: code));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(context.l10n.membership_copy_success)),
+              );
+            },
+            icon: const Icon(Icons.copy_rounded),
+            color: context.colorScheme.primary,
           ),
         ],
       ),

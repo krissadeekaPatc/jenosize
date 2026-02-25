@@ -1,5 +1,5 @@
-import 'package:jenosize/data/enums/user_gender.dart';
 import 'package:equatable/equatable.dart';
+import 'package:jenosize/data/enums/user_gender.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -39,4 +39,24 @@ class User extends Equatable {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  User copyWith({
+    String? id,
+    String? firstName,
+    String? lastName,
+    String? email,
+    UserGender? gender,
+    int? totalPoints,
+    bool? isMember,
+  }) {
+    return User(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      gender: gender ?? this.gender,
+      totalPoints: totalPoints ?? this.totalPoints,
+      isMember: isMember ?? this.isMember,
+    );
+  }
 }

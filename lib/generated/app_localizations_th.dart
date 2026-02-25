@@ -51,6 +51,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get home_button_join_now => 'เข้าร่วมเลย';
 
   @override
+  String get home_button_joined => 'เข้าร่วมแล้ว';
+
+  @override
   String get point_track_title => 'ประวัติคะแนน';
 
   @override
@@ -132,4 +135,11 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get settings_language_th => 'ไทย';
+
+  @override
+  String get home_alert_join_title => 'เข้าร่วมแคมเปญ';
+
+  @override
+  String get home_alert_join_message =>
+      'คุณยืนยันที่จะเข้าร่วมแคมเปญนี้ใช่หรือไม่?';
 }

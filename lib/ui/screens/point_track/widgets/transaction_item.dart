@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:jenosize/data/models/point_history.dart';
 
 class TransactionItem extends StatelessWidget {
-  final PointHistory item;
+  final PointHistory? item;
 
   const TransactionItem({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    final points = item.points ?? 0;
+    final points = item?.points ?? 0;
     final isPositive = points >= 0;
 
     final color = isPositive
@@ -38,7 +38,7 @@ class TransactionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.title ?? '- ',
+                  item?.title ?? '- ',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
@@ -48,7 +48,7 @@ class TransactionItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  formatTransactionDate(item.createdAt),
+                  formatTransactionDate(item?.createdAt),
                   style: const TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 13,

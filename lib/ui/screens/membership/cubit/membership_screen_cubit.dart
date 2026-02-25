@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/data/models/point_history.dart';
 import 'package:jenosize/domain/core/result.dart';
 import 'package:jenosize/domain/repositories/point_repository.dart';
 import 'package:jenosize/ui/cubits/session/session_cubit.dart';
@@ -31,16 +31,22 @@ class MembershipScreenCubit extends Cubit<MembershipScreenState> {
 
     switch (result) {
       case Success():
-        final updatedUser = User(
-          id: currentUser.id,
-          firstName: currentUser.firstName,
-          lastName: currentUser.lastName,
-          email: currentUser.email,
-          gender: currentUser.gender,
-          totalPoints: (currentUser.totalPoints ?? 0) + welcomePoints,
-          isMember: true,
+        final newPointHistory = PointHistory(
+          id: 'welcome_bonus',
+          title: transactionTitle,
+          points: welcomePoints,
+          createdAt: DateTime.now(),
+          userId: currentUser.id!,
         );
-        sessionCubit.setUser(updatedUser);
+
+        sessionCubit.addPointHistory(newPointHistory);
+        sessionCubit.setUser(
+          currentUser.copyWith(
+            totalPoints: (currentUser.totalPoints ?? 0) + welcomePoints,
+            isMember: true,
+          ),
+        );
+
         emit(state.ready());
       case Failure(:final error):
         emit(state.failure(error));

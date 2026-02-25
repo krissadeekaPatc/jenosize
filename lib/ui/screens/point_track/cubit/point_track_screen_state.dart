@@ -1,6 +1,5 @@
-import 'package:jenosize/data/models/point_history.dart';
-import 'package:jenosize/domain/core/app_error.dart';
 import 'package:equatable/equatable.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 
 enum PointTrackScreenStatus {
   initial,
@@ -14,30 +13,25 @@ enum PointTrackScreenStatus {
 
 class PointTrackScreenState extends Equatable {
   final PointTrackScreenStatus status;
-  final List<PointHistory> pointHistories;
   final AppError? error;
 
   const PointTrackScreenState({
     this.status = PointTrackScreenStatus.initial,
-    this.pointHistories = const [],
     this.error,
   });
 
   @override
   List<Object?> get props => [
     status,
-    pointHistories,
     error,
   ];
 
   PointTrackScreenState copyWith({
     PointTrackScreenStatus? status,
-    List<PointHistory>? pointHistories,
     AppError? error,
   }) {
     return PointTrackScreenState(
       status: status ?? this.status,
-      pointHistories: pointHistories ?? this.pointHistories,
       error: error ?? this.error,
     );
   }
@@ -48,12 +42,9 @@ class PointTrackScreenState extends Equatable {
     );
   }
 
-  PointTrackScreenState ready({
-    List<PointHistory>? pointHistories,
-  }) {
+  PointTrackScreenState ready() {
     return copyWith(
       status: PointTrackScreenStatus.ready,
-      pointHistories: pointHistories,
     );
   }
 

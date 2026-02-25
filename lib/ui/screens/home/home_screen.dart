@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jenosize/data/models/campaign.dart';
+import 'package:jenosize/ui/cubits/session/session_cubit.dart';
+import 'package:jenosize/ui/cubits/session/session_state.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/global_widgets/campaign_card.dart';
 import 'package:jenosize/ui/screens/home/cubit/home_screen_cubit.dart';
 import 'package:jenosize/ui/screens/home/cubit/home_screen_state.dart';
 import 'package:jenosize/ui/styles/app_text_style.dart';
@@ -15,10 +18,12 @@ class HomeScreenView extends StatefulWidget {
 }
 
 class _HomeScreenViewState extends State<HomeScreenView> {
+  late final HomeScreenCubit _cubit;
   @override
   void initState() {
     super.initState();
-    context.read<HomeScreenCubit>().loadCampaigns();
+    _cubit = context.read<HomeScreenCubit>();
+    _cubit.loadCampaigns();
   }
 
   void _listener(BuildContext context, HomeScreenState state) {
@@ -39,149 +44,72 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       listener: _listener,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              context.l10n.home_title_campaigns,
-              style: AppTextStyle.w700(20).colorOnSurface(context),
-            ),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
+          appBar: _buildAppBar(),
           body: _buildBody(state),
         );
       },
     );
   }
 
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      title: Text(
+        context.l10n.home_title_campaigns,
+        style: AppTextStyle.w700(20).colorOnSurface(context),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    );
+  }
+
   Widget _buildBody(HomeScreenState state) {
     if (state.campaigns.isEmpty) {
-      return Center(
-        child: Text(
-          context.l10n.home_empty_campaigns,
-          style: AppTextStyle.w500(16).colorOnSurfaceVariant(context),
-        ),
-      );
+      return _buildEmptyState();
     }
+    return _buildCampaignList(state.campaigns);
+  }
 
-    return ListView.separated(
-      padding: const EdgeInsets.only(
-        left: 24,
-        right: 24,
-        top: 16,
-        bottom: 120,
+  Widget _buildEmptyState() {
+    return Center(
+      child: Text(
+        context.l10n.home_empty_campaigns,
+        style: AppTextStyle.w500(16).colorOnSurfaceVariant(context),
       ),
-      itemCount: state.campaigns.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 24),
-      itemBuilder: (context, index) {
-        return _CampaignCard(
-          campaign: state.campaigns[index],
+    );
+  }
+
+  Widget _buildCampaignList(List<Campaign?> campaigns) {
+    return BlocSelector<SessionCubit, SessionState, Set<String>>(
+      selector: (state) => state.joinedCampaignIds,
+      builder: (context, joinedIds) {
+        return ListView.separated(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
+          itemCount: campaigns.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 24),
+          itemBuilder: (context, index) {
+            final campaign = campaigns[index];
+            final isJoined = joinedIds.contains(campaign?.id);
+
+            return CampaignCard(
+              campaign: campaign,
+              isJoined: isJoined,
+              onJoin: () => _onShowJoinConfirmation(campaign),
+            );
+          },
         );
       },
     );
   }
-}
 
-class _CampaignCard extends StatelessWidget {
-  final Campaign? campaign;
+  void _onShowJoinConfirmation(Campaign? campaign) {
+    if (campaign == null) return;
 
-  const _CampaignCard({required this.campaign});
-
-  @override
-  Widget build(BuildContext context) {
-    final bgColor = context.colorScheme.surface;
-    final primaryColor = context.colorScheme.primary;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            offset: const Offset(0, 8),
-            blurRadius: 20,
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Image.network(
-            campaign?.imageUrl ?? '',
-            height: 180,
-            fit: BoxFit.cover,
-            errorBuilder: (_, _, _) => Container(
-              height: 180,
-              color: context.colorScheme.surfaceContainerHighest,
-              child: const Icon(Icons.image_not_supported, size: 40),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  campaign?.title ?? 'Untitled Campaign',
-                  style: AppTextStyle.w700(18).colorOnSurface(context),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  campaign?.description ?? 'No description available',
-                  style: AppTextStyle.w400(14).colorOnSurfaceVariant(context),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.appColors.positive.withValues(
-                          alpha: 0.1,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        '+${campaign?.pointsReward ?? 0} ${context.l10n.common_points_suffix}',
-                        style: AppTextStyle.w800(
-                          16,
-                        ).copyWith(color: context.appColors.positive),
-                      ),
-                    ),
-                    FilledButton(
-                      onPressed: () {},
-                      style: FilledButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: Text(
-                        context.l10n.home_button_join_now,
-                        style: AppTextStyle.w700(14).colorOnPrimary(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    AppAlert.confirmation(
+      context,
+      title: context.l10n.home_alert_join_title,
+      message: context.l10n.home_alert_join_message,
+      onConfirm: () => _cubit.joinCampaign(campaign),
     );
   }
 }

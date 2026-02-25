@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jenosize/app/initializers/dependencies_initializer.dart';
 import 'package:jenosize/app/router/app_routes.dart';
+import 'package:jenosize/common/app_language.dart';
+import 'package:jenosize/ui/cubits/app_language_cubit.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
 import 'package:jenosize/ui/global_widgets/loading_overlay.dart';
 import 'package:jenosize/ui/screens/login/cubit/login_screen_cubit.dart';
@@ -16,9 +18,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        return LoginScreenCubit(getIt());
-      },
+      create: (context) => LoginScreenCubit(getIt()),
       child: const LoginScreenView(),
     );
   }
@@ -72,8 +72,15 @@ class _LoginScreenViewState extends State<LoginScreenView> {
       );
       return;
     }
-
     _cubit.login(email, password);
+  }
+
+  void _onLanguageToggle() {
+    final cubit = context.read<AppLanguageCubit>();
+    final nextLanguage = cubit.state == AppLanguage.en
+        ? AppLanguage.th
+        : AppLanguage.en;
+    cubit.setLanguage(nextLanguage);
   }
 
   @override
@@ -84,81 +91,129 @@ class _LoginScreenViewState extends State<LoginScreenView> {
       builder: (context, state) {
         return LoadingOverlay(
           isLoading: state.isLoading,
-          child: _buildScaffold(),
+          child: Scaffold(
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  _buildContent(),
+                  _buildLanguageToggle(),
+                ],
+              ),
+            ),
+          ),
         );
       },
     );
   }
 
-  Widget _buildScaffold() {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 48.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 48),
-              Icon(
-                Icons.account_circle_rounded,
-                size: 100,
-                color: context.colorScheme.primary,
-              ),
-              const SizedBox(height: 32),
-              Text(
-                context.l10n.login_welcome_back,
-                textAlign: TextAlign.center,
-                style: AppTextStyle.w800(28).colorOnSurface(context),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                context.l10n.login_sign_in_to_continue,
-                textAlign: TextAlign.center,
-                style: AppTextStyle.w400(16).colorOnSurfaceVariant(context),
-              ),
-              const SizedBox(height: 48),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: context.l10n.login_label_email,
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: context.l10n.login_label_password,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                height: 56,
-                child: FilledButton(
-                  onPressed: _onLoginPressed,
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    context.l10n.login_button_submit,
-                    style: AppTextStyle.w700(18).colorOnPrimary(context),
-                  ),
-                ),
-              ),
-            ],
+  Widget _buildContent() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 48.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 48),
+          _buildLogo(),
+          const SizedBox(height: 32),
+          _buildHeader(),
+          const SizedBox(height: 48),
+          _buildForm(),
+          const SizedBox(height: 40),
+          _buildLoginButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLogo() {
+    return Icon(
+      Icons.account_circle_rounded,
+      size: 100,
+      color: context.colorScheme.primary,
+    );
+  }
+
+  Widget _buildHeader() {
+    return Column(
+      children: [
+        Text(
+          context.l10n.login_welcome_back,
+          textAlign: TextAlign.center,
+          style: AppTextStyle.w800(28).colorOnSurface(context),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          context.l10n.login_sign_in_to_continue,
+          textAlign: TextAlign.center,
+          style: AppTextStyle.w400(16).colorOnSurfaceVariant(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildForm() {
+    return Column(
+      children: [
+        TextField(
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            labelText: context.l10n.login_label_email,
+            prefixIcon: const Icon(Icons.email_outlined),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
         ),
+        const SizedBox(height: 20),
+        TextField(
+          controller: _passwordController,
+          obscureText: true,
+          decoration: InputDecoration(
+            labelText: context.l10n.login_label_password,
+            prefixIcon: const Icon(Icons.lock_outline),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return SizedBox(
+      height: 56,
+      child: FilledButton(
+        onPressed: _onLoginPressed,
+        style: FilledButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Text(
+          context.l10n.login_button_submit,
+          style: AppTextStyle.w700(18).colorOnPrimary(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageToggle() {
+    return Positioned(
+      top: 8,
+      right: 16,
+      child: BlocSelector<AppLanguageCubit, AppLanguage, String>(
+        selector: (state) => state.languageCode.toUpperCase(),
+        builder: (context, langCode) {
+          return TextButton.icon(
+            onPressed: _onLanguageToggle,
+            icon: const Icon(Icons.language_rounded, size: 20),
+            label: Text(
+              langCode,
+              style: AppTextStyle.w700(14).colorOnSurface(context),
+            ),
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+            ),
+          );
+        },
       ),
     );
   }

@@ -8,7 +8,6 @@ import 'package:jenosize/data/data_sources/store_version_remote_data_source.dart
 import 'package:jenosize/data/data_sources/user_remote_data_source.dart';
 import 'package:jenosize/data/repositories/auth_repository_impl.dart';
 import 'package:jenosize/data/repositories/campaign_repository_impl.dart';
-import 'package:jenosize/data/repositories/member_repository_impl.dart';
 import 'package:jenosize/data/repositories/point_repository_impl.dart';
 import 'package:jenosize/data/repositories/store_version_repository_impl.dart';
 import 'package:jenosize/data/repositories/user_repository_impl.dart';
@@ -16,13 +15,13 @@ import 'package:jenosize/data/storages/app_storage_impl.dart';
 import 'package:jenosize/data/storages/token_vault_impl.dart';
 import 'package:jenosize/domain/repositories/auth_repository.dart';
 import 'package:jenosize/domain/repositories/campaign_repository.dart';
-import 'package:jenosize/domain/repositories/member_repository.dart';
 import 'package:jenosize/domain/repositories/point_repository.dart';
 import 'package:jenosize/domain/repositories/store_version_repository.dart';
 import 'package:jenosize/domain/repositories/user_repository.dart';
 import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:jenosize/domain/storages/secure_storage.dart';
 import 'package:jenosize/domain/storages/token_vault.dart';
+import 'package:jenosize/domain/use_cases/get_point_transaction_usecase.dart';
 import 'package:jenosize/domain/use_cases/get_user_use_case.dart';
 import 'package:jenosize/domain/use_cases/login_with_email_use_case.dart';
 import 'package:jenosize/ui/cubits/app_language_cubit.dart';
@@ -75,10 +74,6 @@ Future<void> initializeDependencies() async {
     () => const UserRepositoryImpl(UserRemoteDataSource()),
   );
 
-  getIt.registerLazySingleton<MemberRepository>(
-    () => MemberRepositoryImpl(storage),
-  );
-
   getIt.registerLazySingleton<CampaignRepository>(
     () => CampaignRepositoryImpl(
       CampaignRemoteDataSource(),
@@ -87,6 +82,13 @@ Future<void> initializeDependencies() async {
 
   getIt.registerLazySingleton<PointRepository>(
     () => const PointRepositoryImpl(PointRemoteDataSource()),
+  );
+
+  getIt.registerLazySingleton<GetPointTransactionsUseCase>(
+    () => GetPointTransactionsUseCase(
+      pointRepository: getIt(),
+      sessionCubit: getIt(),
+    ),
   );
 
   /// UseCases

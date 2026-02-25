@@ -55,39 +55,110 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
       listener: _listener,
       child: Scaffold(
         backgroundColor: context.colorScheme.surface,
-        appBar: AppBar(
-          title: Text(
-            context.l10n.settings_title,
-            style: AppTextStyle.w700(20).colorOnSurface(context),
-          ),
-          centerTitle: true,
-        ),
-        body: Scrollbar(
-          controller: _scrollController,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionHeader(context.l10n.settings_section_appearance),
-                const SizedBox(height: 12),
-                _buildThemeCard(),
-                const SizedBox(height: 32),
-                _buildSectionHeader(context.l10n.settings_section_language),
-                const SizedBox(height: 12),
-                _buildLanguageCard(),
-                const SizedBox(height: 32),
-                _buildSectionHeader(context.l10n.settings_section_account),
-                const SizedBox(height: 12),
-                _logoutButton(),
-                const SizedBox(height: 40),
-                _buildAppVersion(),
-              ],
-            ),
-          ),
+        appBar: _buildAppBar(),
+        body: _buildBody(),
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text(
+        context.l10n.settings_title,
+        style: AppTextStyle.w700(20).colorOnSurface(context),
+      ),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildBody() {
+    return Scrollbar(
+      controller: _scrollController,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildAppearanceSection(),
+            const SizedBox(height: 32),
+            _buildLanguageSection(),
+            const SizedBox(height: 32),
+            _buildAccountSection(),
+            const SizedBox(height: 40),
+            _buildFooterInfo(),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAppearanceSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader(context.l10n.settings_section_appearance),
+        const SizedBox(height: 12),
+        _buildCardContainer(
+          child: BlocSelector<ThemeModeCubit, ThemeMode, ThemeMode>(
+            selector: (currentMode) => currentMode,
+            builder: (context, currentMode) {
+              return Column(
+                children: ThemeMode.values.map((mode) {
+                  return _buildThemeItem(mode, currentMode == mode);
+                }).toList(),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader(context.l10n.settings_section_language),
+        const SizedBox(height: 12),
+        _buildCardContainer(
+          child: BlocSelector<AppLanguageCubit, AppLanguage, AppLanguage>(
+            selector: (state) => state,
+            builder: (context, currentLanguage) {
+              return Column(
+                children: [
+                  _buildLanguageItem(
+                    label: context.l10n.settings_language_en,
+                    isSelected: currentLanguage == AppLanguage.en,
+                    onTap: () => context.read<AppLanguageCubit>().setLanguage(
+                      AppLanguage.en,
+                    ),
+                  ),
+                  _buildDivider(indent: 20),
+                  _buildLanguageItem(
+                    label: context.l10n.settings_language_th,
+                    isSelected: currentLanguage == AppLanguage.th,
+                    onTap: () => context.read<AppLanguageCubit>().setLanguage(
+                      AppLanguage.th,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader(context.l10n.settings_section_account),
+        const SizedBox(height: 12),
+        _buildLogoutButton(),
+      ],
     );
   }
 
@@ -104,7 +175,7 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
     );
   }
 
-  Widget _buildThemeCard() {
+  Widget _buildCardContainer({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
         color: context.colorScheme.surfaceContainerLow,
@@ -113,84 +184,16 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
           color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
-      child: BlocSelector<ThemeModeCubit, ThemeMode, ThemeMode>(
-        selector: (currentMode) => currentMode,
-        builder: (context, currentMode) {
-          return Column(
-            children: ThemeMode.values
-                .map((mode) => _buildThemeItem(mode, currentMode == mode))
-                .toList(),
-          );
-        },
-      ),
+      child: child,
     );
   }
 
-  Widget _buildLanguageCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
-      ),
-      child: BlocSelector<AppLanguageCubit, AppLanguage, AppLanguage>(
-        selector: (state) => state,
-        builder: (context, currentLanguage) {
-          return Column(
-            children: [
-              _buildLanguageItem(
-                label: context.l10n.settings_language_en,
-                isSelected: currentLanguage == AppLanguage.en,
-                onTap: () => context.read<AppLanguageCubit>().setLanguage(
-                  AppLanguage.en,
-                ),
-              ),
-              Divider(
-                indent: 20,
-                endIndent: 20,
-                height: 1,
-                color: context.colorScheme.outlineVariant.withValues(
-                  alpha: 0.3,
-                ),
-              ),
-              _buildLanguageItem(
-                label: context.l10n.settings_language_th,
-                isSelected: currentLanguage == AppLanguage.th,
-                isLast: true,
-                onTap: () => context.read<AppLanguageCubit>().setLanguage(
-                  AppLanguage.th,
-                ),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildLanguageItem({
-    required String label,
-    required bool isSelected,
-    required VoidCallback onTap,
-    bool isLast = false,
-  }) {
-    return ListTile(
-      title: Text(
-        label,
-        style: AppTextStyle.w500(16).colorOnSurface(context),
-      ),
-      trailing: isSelected
-          ? Icon(
-              Icons.check_circle_rounded,
-              color: context.colorScheme.primary,
-            )
-          : null,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      onTap: onTap,
+  Widget _buildDivider({double indent = 56}) {
+    return Divider(
+      indent: indent,
+      endIndent: 20,
+      height: 1,
+      color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
     );
   }
 
@@ -232,23 +235,29 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
           ),
           onTap: () => context.read<ThemeModeCubit>().set(mode),
         ),
-        if (!isLast)
-          Divider(
-            indent: 56,
-            endIndent: 20,
-            height: 1,
-            color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
-          ),
+        if (!isLast) _buildDivider(),
       ],
     );
   }
 
-  Widget _logoutButton() {
+  Widget _buildLanguageItem({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
     return ListTile(
-      leading: Icon(
-        Icons.logout_rounded,
-        color: context.appColors.negative,
-      ),
+      title: Text(label, style: AppTextStyle.w500(16).colorOnSurface(context)),
+      trailing: isSelected
+          ? Icon(Icons.check_circle_rounded, color: context.colorScheme.primary)
+          : null,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildLogoutButton() {
+    return ListTile(
+      leading: Icon(Icons.logout_rounded, color: context.appColors.negative),
       title: Text(
         context.l10n.settings_button_logout,
         style: AppTextStyle.w600(
@@ -265,7 +274,7 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
     );
   }
 
-  Widget _buildAppVersion() {
+  Widget _buildFooterInfo() {
     return BlocSelector<
       SettingsScreenCubit,
       SettingsScreenState,

@@ -3,6 +3,8 @@ enum StorageKey {
   language,
   themeMode,
   user,
+  pointHistory,
+  joinedCampaignIds,
 }
 
 abstract class AppStorage {

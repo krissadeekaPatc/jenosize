@@ -14,6 +14,7 @@
   "home_empty_campaigns": "ยังไม่มีแคมเปญในขณะนี้",
   "common_points_suffix": "คะแนน",
   "home_button_join_now": "เข้าร่วมเลย",
+  "home_button_joined": "เข้าร่วมแล้ว",
   "point_track_title": "ประวัติคะแนน",
   "point_track_total_balance": "คะแนนคงเหลือทั้งหมด",
   "point_track_unit_points": "คะแนน",
@@ -38,5 +39,7 @@
   "settings_version_label": "เวอร์ชัน {version}",
   "settings_section_language": "ภาษา",
   "settings_language_en": "อังกฤษ",
-  "settings_language_th": "ไทย"
+  "settings_language_th": "ไทย",
+  "home_alert_join_title": "เข้าร่วมแคมเปญ",
+  "home_alert_join_message": "คุณยืนยันที่จะเข้าร่วมแคมเปญนี้ใช่หรือไม่?"
 }

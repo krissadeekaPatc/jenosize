@@ -182,6 +182,12 @@ abstract class AppLocalizations {
   /// **'Join Now'**
   String get home_button_join_now;
 
+  /// No description provided for @home_button_joined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined'**
+  String get home_button_joined;
+
   /// No description provided for @point_track_title.
   ///
   /// In en, this message translates to:
@@ -331,6 +337,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Thai'**
   String get settings_language_th;
+
+  /// No description provided for @home_alert_join_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Campaign'**
+  String get home_alert_join_title;
+
+  /// No description provided for @home_alert_join_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to join this campaign?'**
+  String get home_alert_join_message;
 }
 
 class _AppLocalizationsDelegate

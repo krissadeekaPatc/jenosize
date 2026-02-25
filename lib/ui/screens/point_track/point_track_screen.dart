@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jenosize/data/models/point_history.dart';
 import 'package:jenosize/ui/cubits/session/session_cubit.dart';
 import 'package:jenosize/ui/cubits/session/session_state.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
@@ -43,15 +44,7 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
       listenWhen: (previous, current) => previous.status != current.status,
       listener: _listener,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            context.l10n.point_track_title,
-            style: AppTextStyle.w700(20).colorOnSurface(context),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
+        appBar: _buildAppBar(),
         body: Column(
           children: [
             _buildTotalPointsHeader(),
@@ -59,6 +52,18 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
           ],
         ),
       ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text(
+        context.l10n.point_track_title,
+        style: AppTextStyle.w700(20).colorOnSurface(context),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 
@@ -76,35 +81,9 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
           ),
           child: Column(
             children: [
-              Text(
-                context.l10n.point_track_total_balance,
-                style: AppTextStyle.w500(14).copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
-                ),
-              ),
+              _buildBalanceLabel(context),
               const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    '$totalPoints',
-                    style: AppTextStyle.w800(40).copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    context.l10n.point_track_unit_points,
-                    style: AppTextStyle.w600(16).copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                ],
-              ),
+              _buildPointsValue(context, totalPoints),
             ],
           ),
         );
@@ -112,31 +91,73 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
     );
   }
 
-  Widget _buildBodyList() {
-    return BlocSelector<
-      PointTrackScreenCubit,
-      PointTrackScreenState,
-      PointTrackScreenState
-    >(
-      selector: (state) => state,
-      builder: (context, state) {
-        if (state.pointHistories.isEmpty && !state.status.isLoading) {
-          return Center(
-            child: Text(
-              context.l10n.point_track_empty_transactions,
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          );
-        }
+  Widget _buildBalanceLabel(BuildContext context) {
+    return Text(
+      context.l10n.point_track_total_balance,
+      style: AppTextStyle.w500(14).copyWith(
+        color: Theme.of(
+          context,
+        ).colorScheme.onPrimaryContainer.withValues(alpha: 0.7),
+      ),
+    );
+  }
 
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-          itemCount: state.pointHistories.length,
-          itemBuilder: (context, index) {
-            final item = state.pointHistories[index];
-            return TransactionItem(item: item);
+  Widget _buildPointsValue(BuildContext context, int totalPoints) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Text(
+          '$totalPoints',
+          style: AppTextStyle.w800(40).copyWith(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          context.l10n.point_track_unit_points,
+          style: AppTextStyle.w600(16).copyWith(
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBodyList() {
+    return BlocSelector<SessionCubit, SessionState, List<PointHistory?>>(
+      selector: (state) => state.pointHistories,
+      builder: (context, histories) {
+        return BlocSelector<PointTrackScreenCubit, PointTrackScreenState, bool>(
+          selector: (state) => state.status.isLoading,
+          builder: (context, isLoading) {
+            if (histories.isEmpty) {
+              return _buildEmptyState();
+            }
+
+            return _buildTransactionListView(histories);
           },
         );
+      },
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Text(
+        context.l10n.point_track_empty_transactions,
+        style: TextStyle(color: Colors.grey[600]),
+      ),
+    );
+  }
+
+  Widget _buildTransactionListView(List<PointHistory?> histories) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      itemCount: histories.length,
+      itemBuilder: (context, index) {
+        return TransactionItem(item: histories[index]);
       },
     );
   }

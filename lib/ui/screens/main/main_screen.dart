@@ -27,12 +27,12 @@ class MainScreen extends StatelessWidget {
         BlocProvider(
           create: (_) => HomeScreenCubit(
             campaignRepository: getIt(),
+            sessionCubit: getIt(),
           ),
         ),
         BlocProvider(
           create: (_) => PointTrackScreenCubit(
-            pointRepository: getIt(),
-            sessionCubit: getIt(),
+            getPointTransactionsUseCase: getIt(),
           ),
         ),
         BlocProvider(
