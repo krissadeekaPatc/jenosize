@@ -1,0 +1,10 @@
+{
+    "@@locale": "en",
+    "common_ok": "OK",
+    "common_cancel": "Cancel",
+    "error_title": "Sorry",
+    "new_version_available_dialog_message": "Please update to the latest version {version}",
+    "new_version_available_dialog_title": "New Version Available",
+    "dashboard_screen_tab_home": "Home",
+    "dashboard_screen_tab_settings": "Settings"
+}
