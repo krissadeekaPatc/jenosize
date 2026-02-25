@@ -1,33 +1,43 @@
-import 'package:app_template/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 import 'package:equatable/equatable.dart';
 
 enum SettingsScreenStatus {
   initial,
   loading,
   ready,
-  failure;
+  failure,
+  success
+  ;
 
   bool get isLoading => this == SettingsScreenStatus.loading;
 }
 
 class SettingsScreenState extends Equatable {
   final SettingsScreenStatus status;
+  final String appName; // เพิ่มตรงนี้
+  final String version; // เพิ่มตรงนี้
   final AppError? error;
 
   const SettingsScreenState({
     this.status = SettingsScreenStatus.initial,
+    this.appName = '',
+    this.version = '',
     this.error,
   });
 
   @override
-  List<Object?> get props => [status, error];
+  List<Object?> get props => [status, appName, version, error];
 
   SettingsScreenState copyWith({
     SettingsScreenStatus? status,
+    String? appName,
+    String? version,
     AppError? error,
   }) {
     return SettingsScreenState(
       status: status ?? this.status,
+      appName: appName ?? this.appName,
+      version: version ?? this.version,
       error: error ?? this.error,
     );
   }
@@ -38,6 +48,10 @@ class SettingsScreenState extends Equatable {
 
   SettingsScreenState ready() {
     return copyWith(status: SettingsScreenStatus.ready);
+  }
+
+  SettingsScreenState success() {
+    return copyWith(status: SettingsScreenStatus.success);
   }
 
   SettingsScreenState failure(AppError error) {

@@ -1,5 +1,5 @@
-import 'package:app_template/domain/storages/app_storage.dart';
-import 'package:app_template/ui/cubits/theme_mode_cubit.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
+import 'package:jenosize/ui/cubits/theme_mode_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

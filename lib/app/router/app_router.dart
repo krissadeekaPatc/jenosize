@@ -1,7 +1,7 @@
-import 'package:app_template/app/router/app_routes.dart';
-import 'package:app_template/ui/screens/login/login_screen.dart';
-import 'package:app_template/ui/screens/main/main_screen.dart';
-import 'package:app_template/ui/screens/splash/splash_screen.dart';
+import 'package:jenosize/app/router/app_routes.dart';
+import 'package:jenosize/ui/screens/login/login_screen.dart';
+import 'package:jenosize/ui/screens/main/main_screen.dart';
+import 'package:jenosize/ui/screens/splash/splash_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 

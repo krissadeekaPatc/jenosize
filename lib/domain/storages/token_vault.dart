@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/auth.dart';
+import 'package:jenosize/data/models/auth.dart';
 
 enum TokenVaultKey {
   accessToken,

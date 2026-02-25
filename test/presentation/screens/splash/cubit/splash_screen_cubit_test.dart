@@ -1,11 +1,10 @@
-import 'package:app_template/data/models/user.dart';
-import 'package:app_template/data/models/version_status.dart';
-import 'package:app_template/domain/core/app_error.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/ui/screens/splash/cubit/splash_screen_cubit.dart';
-import 'package:app_template/ui/screens/splash/cubit/splash_screen_state.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/ui/screens/splash/cubit/splash_screen_cubit.dart';
+import 'package:jenosize/ui/screens/splash/cubit/splash_screen_state.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks.dart';
@@ -32,40 +31,9 @@ void main() {
     test('initial state is SplashScreenState.initial', () {
       expect(cubit.state, equals(const SplashScreenState()));
     });
-
-    blocTest<SplashScreenCubit, SplashScreenState>(
-      'emits newVersionAvailable state when getVersionStatus returns an update',
-      build: () {
-        when(() => mockUseCase.getVersionStatus()).thenAnswer(
-          (_) async => const VersionStatus(
-            localVersion: '1.0.0',
-            storeVersion: '1.0.1',
-            appStoreLink: 'http://appstore.link',
-          ),
-        );
-
-        return cubit;
-      },
-      act: (cubit) => cubit.initialize(),
-      verify: (_) {
-        verify(() => mockUseCase.getVersionStatus()).called(1);
-      },
-      expect: () => [
-        const SplashScreenState(
-          status: SplashScreenStatus.newVersionAvailable,
-          appStoreLink: 'http://appstore.link',
-          storeVersion: '1.0.1',
-        ),
-      ],
-    );
-
     blocTest<SplashScreenCubit, SplashScreenState>(
       'emits authenticated state when no update available and session is authenticated',
       build: () {
-        when(
-          () => mockUseCase.getVersionStatus(),
-        ).thenAnswer((_) async => null);
-
         when(() => mockUseCase.getUserSession()).thenAnswer((_) async {
           return const Success(User());
         });
@@ -74,7 +42,6 @@ void main() {
       },
       act: (cubit) => cubit.initialize(),
       verify: (_) {
-        verify(() => mockUseCase.getVersionStatus()).called(1);
         verify(() => mockUseCase.getUserSession()).called(1);
       },
       expect: () => [
@@ -89,10 +56,6 @@ void main() {
     blocTest<SplashScreenCubit, SplashScreenState>(
       'emits unauthenticated state when no update available and session is not authenticated',
       build: () {
-        when(
-          () => mockUseCase.getVersionStatus(),
-        ).thenAnswer((_) async => null);
-
         when(() => mockUseCase.getUserSession()).thenAnswer((_) async {
           return const Failure(AppError(message: 'error'));
         });
@@ -101,7 +64,6 @@ void main() {
       },
       act: (cubit) => cubit.initialize(),
       verify: (_) {
-        verify(() => mockUseCase.getVersionStatus()).called(1);
         verify(() => mockUseCase.getUserSession()).called(1);
       },
       expect: () => [

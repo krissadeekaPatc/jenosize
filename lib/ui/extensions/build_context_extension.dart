@@ -1,7 +1,7 @@
-import 'package:app_template/generated/app_localizations.dart';
-import 'package:app_template/ui/cubits/app_language_cubit.dart';
-import 'package:app_template/ui/cubits/session/session_cubit.dart';
-import 'package:app_template/ui/styles/app_colors.dart';
+import 'package:jenosize/generated/app_localizations.dart';
+import 'package:jenosize/ui/cubits/app_language_cubit.dart';
+import 'package:jenosize/ui/cubits/session/session_cubit.dart';
+import 'package:jenosize/ui/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

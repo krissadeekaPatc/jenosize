@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_th.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,52 @@ abstract class AppLocalizations {
       ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('th'),
+  ];
+
+  /// No description provided for @login_error_empty_fields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter both email and password.'**
+  String get login_error_empty_fields;
+
+  /// No description provided for @login_welcome_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome Back'**
+  String get login_welcome_back;
+
+  /// No description provided for @login_sign_in_to_continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get login_sign_in_to_continue;
+
+  /// No description provided for @login_label_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get login_label_email;
+
+  /// No description provided for @login_label_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get login_label_password;
+
+  /// No description provided for @login_button_submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login_button_submit;
+
+  /// No description provided for @error_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorry'**
+  String get error_title;
 
   /// No description provided for @common_ok.
   ///
@@ -106,35 +152,185 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get common_cancel;
 
-  /// No description provided for @error_title.
+  /// No description provided for @home_title_campaigns.
   ///
   /// In en, this message translates to:
-  /// **'Sorry'**
-  String get error_title;
+  /// **'Campaigns'**
+  String get home_title_campaigns;
 
-  /// No description provided for @new_version_available_dialog_message.
+  /// No description provided for @home_error_load_failed.
   ///
   /// In en, this message translates to:
-  /// **'Please update to the latest version {version}'**
-  String new_version_available_dialog_message(Object version);
+  /// **'Failed to load campaigns'**
+  String get home_error_load_failed;
 
-  /// No description provided for @new_version_available_dialog_title.
+  /// No description provided for @home_empty_campaigns.
   ///
   /// In en, this message translates to:
-  /// **'New Version Available'**
-  String get new_version_available_dialog_title;
+  /// **'No campaigns available'**
+  String get home_empty_campaigns;
 
-  /// No description provided for @dashboard_screen_tab_home.
+  /// No description provided for @common_points_suffix.
   ///
   /// In en, this message translates to:
-  /// **'Home'**
-  String get dashboard_screen_tab_home;
+  /// **'Pts'**
+  String get common_points_suffix;
 
-  /// No description provided for @dashboard_screen_tab_settings.
+  /// No description provided for @home_button_join_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Now'**
+  String get home_button_join_now;
+
+  /// No description provided for @point_track_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Point History'**
+  String get point_track_title;
+
+  /// No description provided for @point_track_total_balance.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Balance'**
+  String get point_track_total_balance;
+
+  /// No description provided for @point_track_unit_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get point_track_unit_points;
+
+  /// No description provided for @point_track_empty_transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet.'**
+  String get point_track_empty_transactions;
+
+  /// No description provided for @membership_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership'**
+  String get membership_title;
+
+  /// No description provided for @membership_welcome_back.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back, {name}! ✨'**
+  String membership_welcome_back(Object name);
+
+  /// No description provided for @membership_join_promo.
+  ///
+  /// In en, this message translates to:
+  /// **'Join our membership to get 100 points and share referral codes!'**
+  String get membership_join_promo;
+
+  /// No description provided for @membership_button_join.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Now'**
+  String get membership_button_join;
+
+  /// No description provided for @membership_status_premium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Member'**
+  String get membership_status_premium;
+
+  /// No description provided for @membership_refer_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Refer-a-Friend'**
+  String get membership_refer_title;
+
+  /// No description provided for @membership_refer_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite your friends to join and earn more points!'**
+  String get membership_refer_desc;
+
+  /// No description provided for @membership_copy_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get membership_copy_success;
+
+  /// No description provided for @membership_share_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Join me on Jenosize! Use my code: {code}'**
+  String membership_share_text(Object code);
+
+  /// No description provided for @membership_button_share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share referral code'**
+  String get membership_button_share;
+
+  /// No description provided for @settings_title.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
-  String get dashboard_screen_tab_settings;
+  String get settings_title;
+
+  /// No description provided for @settings_section_appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settings_section_appearance;
+
+  /// No description provided for @settings_section_account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get settings_section_account;
+
+  /// No description provided for @settings_theme_system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get settings_theme_system;
+
+  /// No description provided for @settings_theme_light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get settings_theme_light;
+
+  /// No description provided for @settings_theme_dark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get settings_theme_dark;
+
+  /// No description provided for @settings_button_logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get settings_button_logout;
+
+  /// No description provided for @settings_version_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String settings_version_label(Object version);
+
+  /// No description provided for @settings_section_language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settings_section_language;
+
+  /// No description provided for @settings_language_en.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settings_language_en;
+
+  /// No description provided for @settings_language_th.
+  ///
+  /// In en, this message translates to:
+  /// **'Thai'**
+  String get settings_language_th;
 }
 
 class _AppLocalizationsDelegate
@@ -148,7 +344,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['en', 'th'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -159,6 +355,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en':
       return AppLocalizationsEn();
+    case 'th':
+      return AppLocalizationsTh();
   }
 
   throw FlutterError(

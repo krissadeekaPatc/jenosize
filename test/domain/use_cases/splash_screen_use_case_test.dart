@@ -1,8 +1,8 @@
-// import 'package:app_template/data/enums/user_gender.dart';
-// import 'package:app_template/data/models/user.dart';
-// import 'package:app_template/domain/core/app_error.dart';
-// import 'package:app_template/domain/core/result.dart';
-// import 'package:app_template/domain/use_cases/splash_use_case.dart';
+// import 'package:jenosize/data/enums/user_gender.dart';
+// import 'package:jenosize/data/models/user.dart';
+// import 'package:jenosize/domain/core/app_error.dart';
+// import 'package:jenosize/domain/core/result.dart';
+// import 'package:jenosize/domain/use_cases/splash_use_case.dart';
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:mocktail/mocktail.dart';
 

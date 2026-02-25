@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 
-import 'package:app_template/domain/storages/app_storage.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStorageImpl implements AppStorage {

@@ -1,9 +1,9 @@
-import 'package:app_template/app/env.dart';
-import 'package:app_template/common/curl_logger.dart';
-import 'package:app_template/data/api_client/api_client_impl.dart';
-import 'package:app_template/domain/api_client/api_client.dart';
-import 'package:app_template/domain/storages/token_vault.dart';
-import 'package:app_template/ui/cubits/app_language_cubit.dart';
+import 'package:jenosize/app/env.dart';
+import 'package:jenosize/common/curl_logger.dart';
+import 'package:jenosize/data/api_client/api_client_impl.dart';
+import 'package:jenosize/domain/api_client/api_client.dart';
+import 'package:jenosize/domain/storages/token_vault.dart';
+import 'package:jenosize/ui/cubits/app_language_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';

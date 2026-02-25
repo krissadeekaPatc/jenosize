@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:app_template/domain/core/app_error.dart';
-import 'package:app_template/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/ui/extensions/build_context_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

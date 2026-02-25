@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/user.dart';
+import 'package:jenosize/data/models/user.dart';
 import 'package:equatable/equatable.dart';
 
 class SessionState extends Equatable {

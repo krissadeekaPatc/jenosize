@@ -1,14 +1,14 @@
-import 'package:app_template/app/initializers/dependencies_initializer.dart';
-import 'package:app_template/app/router/app_routes.dart';
-import 'package:app_template/ui/extensions/build_context_extension.dart';
-import 'package:app_template/ui/global_widgets/loading_overlay.dart';
-import 'package:app_template/ui/screens/login/cubit/login_screen_cubit.dart';
-import 'package:app_template/ui/screens/login/cubit/login_screen_state.dart';
-import 'package:app_template/ui/styles/app_text_style.dart';
-import 'package:app_template/ui/utils/app_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jenosize/app/initializers/dependencies_initializer.dart';
+import 'package:jenosize/app/router/app_routes.dart';
+import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/global_widgets/loading_overlay.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_cubit.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
+import 'package:jenosize/ui/styles/app_text_style.dart';
+import 'package:jenosize/ui/utils/app_alert.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -33,8 +33,8 @@ class LoginScreenView extends StatefulWidget {
 
 class _LoginScreenViewState extends State<LoginScreenView> {
   late final LoginScreenCubit _cubit;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -62,13 +62,13 @@ class _LoginScreenViewState extends State<LoginScreenView> {
   }
 
   void _onLoginPressed() {
-    FocusScope.of(context).unfocus(); // ปิดคีย์บอร์ด
+    FocusScope.of(context).unfocus();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter both email and password.')),
+        SnackBar(content: Text(context.l10n.login_error_empty_fields)),
       );
       return;
     }
@@ -94,7 +94,7 @@ class _LoginScreenViewState extends State<LoginScreenView> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 48.0),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 48.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -106,13 +106,13 @@ class _LoginScreenViewState extends State<LoginScreenView> {
               ),
               const SizedBox(height: 32),
               Text(
-                'Welcome Back',
+                context.l10n.login_welcome_back,
                 textAlign: TextAlign.center,
                 style: AppTextStyle.w800(28).colorOnSurface(context),
               ),
               const SizedBox(height: 8),
               Text(
-                'Sign in to continue',
+                context.l10n.login_sign_in_to_continue,
                 textAlign: TextAlign.center,
                 style: AppTextStyle.w400(16).colorOnSurfaceVariant(context),
               ),
@@ -121,7 +121,7 @@ class _LoginScreenViewState extends State<LoginScreenView> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: context.l10n.login_label_email,
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -133,7 +133,7 @@ class _LoginScreenViewState extends State<LoginScreenView> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: context.l10n.login_label_password,
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -151,7 +151,7 @@ class _LoginScreenViewState extends State<LoginScreenView> {
                     ),
                   ),
                   child: Text(
-                    'Login',
+                    context.l10n.login_button_submit,
                     style: AppTextStyle.w700(18).colorOnPrimary(context),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 
 enum MembershipScreenStatus {
   initial,
@@ -12,7 +13,7 @@ enum MembershipScreenStatus {
 
 class MembershipScreenState extends Equatable {
   final MembershipScreenStatus status;
-  final Exception? error;
+  final AppError? error;
 
   const MembershipScreenState({
     this.status = MembershipScreenStatus.initial,
@@ -27,7 +28,7 @@ class MembershipScreenState extends Equatable {
 
   MembershipScreenState copyWith({
     MembershipScreenStatus? status,
-    Exception? error,
+    AppError? error,
   }) {
     return MembershipScreenState(
       status: status ?? this.status,
@@ -48,7 +49,7 @@ class MembershipScreenState extends Equatable {
   }
 
   MembershipScreenState failure(
-    Exception error,
+    AppError error,
   ) {
     return copyWith(
       status: MembershipScreenStatus.failure,

@@ -1,10 +1,13 @@
-import 'package:app_template/ui/extensions/build_context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jenosize/ui/extensions/build_context_extension.dart';
 
 class AppTextStyle {
   AppTextStyle._();
 
-  static TextStyle get _base => const TextStyle();
+  static TextStyle get _base => TextStyle(
+    fontFamily: GoogleFonts.ibmPlexSansThai().fontFamily!,
+  );
 
   /// Thin
   static TextStyle w100(double fontSize) =>

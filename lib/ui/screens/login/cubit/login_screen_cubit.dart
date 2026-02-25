@@ -1,7 +1,7 @@
-import 'package:app_template/data/models/requests/login_with_email_request.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/domain/use_cases/login_with_email_use_case.dart';
-import 'package:app_template/ui/screens/login/cubit/login_screen_state.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/use_cases/login_with_email_use_case.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreenCubit extends Cubit<LoginScreenState> {

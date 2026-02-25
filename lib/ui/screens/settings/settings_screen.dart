@@ -1,11 +1,15 @@
-import 'package:app_template/app/router/app_routes.dart';
-import 'package:app_template/ui/cubits/theme_mode_cubit.dart';
-import 'package:app_template/ui/extensions/build_context_extension.dart';
-import 'package:app_template/ui/screens/settings/cubit/settings_screen_cubit.dart';
-import 'package:app_template/ui/screens/settings/cubit/settings_screen_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jenosize/app/router/app_routes.dart';
+import 'package:jenosize/common/app_language.dart';
+import 'package:jenosize/ui/cubits/app_language_cubit.dart';
+import 'package:jenosize/ui/cubits/theme_mode_cubit.dart';
+import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/screens/settings/cubit/settings_screen_cubit.dart';
+import 'package:jenosize/ui/screens/settings/cubit/settings_screen_state.dart';
+import 'package:jenosize/ui/styles/app_text_style.dart';
+import 'package:jenosize/ui/utils/app_alert.dart';
 
 class SettingsScreenView extends StatefulWidget {
   const SettingsScreenView({super.key});
@@ -15,7 +19,15 @@ class SettingsScreenView extends StatefulWidget {
 }
 
 class _SettingsScreenViewState extends State<SettingsScreenView> {
+  late final SettingsScreenCubit _cubit;
   final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = context.read<SettingsScreenCubit>();
+    _cubit.init();
+  }
 
   @override
   void dispose() {
@@ -29,25 +41,49 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
       case SettingsScreenStatus.loading:
       case SettingsScreenStatus.ready:
         break;
-
+      case SettingsScreenStatus.success:
+        context.go(AppRoutes.splash);
       case SettingsScreenStatus.failure:
-        break;
+        AppAlert.error(context, error: state.error);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<SettingsScreenCubit, SettingsScreenState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: _listener,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Settings'), centerTitle: true),
+        backgroundColor: context.colorScheme.surface,
+        appBar: AppBar(
+          title: Text(
+            context.l10n.settings_title,
+            style: AppTextStyle.w700(20).colorOnSurface(context),
+          ),
+          centerTitle: true,
+        ),
         body: Scrollbar(
           controller: _scrollController,
           child: SingleChildScrollView(
             controller: _scrollController,
+            padding: const EdgeInsets.all(20),
             child: Column(
-              spacing: 16,
-              children: [_themeModeSetting(), _logoutButton()],
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionHeader(context.l10n.settings_section_appearance),
+                const SizedBox(height: 12),
+                _buildThemeCard(),
+                const SizedBox(height: 32),
+                _buildSectionHeader(context.l10n.settings_section_language),
+                const SizedBox(height: 12),
+                _buildLanguageCard(),
+                const SizedBox(height: 32),
+                _buildSectionHeader(context.l10n.settings_section_account),
+                const SizedBox(height: 12),
+                _logoutButton(),
+                const SizedBox(height: 40),
+                _buildAppVersion(),
+              ],
             ),
           ),
         ),
@@ -55,41 +91,205 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
     );
   }
 
-  Widget _themeModeSetting() {
-    return ColoredBox(
-      color: context.colorScheme.surfaceContainerHigh,
-      child: BlocBuilder<ThemeModeCubit, ThemeMode>(
-        builder: (context, state) {
-          return RadioGroup<ThemeMode>(
-            groupValue: state,
-            onChanged: (value) {
-              if (value != null) {
-                context.read<ThemeModeCubit>().set(value);
-              }
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: ThemeMode.values.map((e) {
-                return RadioListTile<ThemeMode>(
-                  title: Text(e.name),
-                  value: e,
-                );
-              }).toList(),
-            ),
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        title.toUpperCase(),
+        style: AppTextStyle.w700(13).copyWith(
+          color: context.colorScheme.primary,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ),
+      child: BlocSelector<ThemeModeCubit, ThemeMode, ThemeMode>(
+        selector: (currentMode) => currentMode,
+        builder: (context, currentMode) {
+          return Column(
+            children: ThemeMode.values
+                .map((mode) => _buildThemeItem(mode, currentMode == mode))
+                .toList(),
           );
         },
       ),
     );
   }
 
-  Widget _logoutButton() {
-    return Center(
-      child: TextButton(
-        onPressed: () {
-          context.go(AppRoutes.splash);
-        },
-        child: const Text('Logout'),
+  Widget _buildLanguageCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
       ),
+      child: BlocSelector<AppLanguageCubit, AppLanguage, AppLanguage>(
+        selector: (state) => state,
+        builder: (context, currentLanguage) {
+          return Column(
+            children: [
+              _buildLanguageItem(
+                label: context.l10n.settings_language_en,
+                isSelected: currentLanguage == AppLanguage.en,
+                onTap: () => context.read<AppLanguageCubit>().setLanguage(
+                  AppLanguage.en,
+                ),
+              ),
+              Divider(
+                indent: 20,
+                endIndent: 20,
+                height: 1,
+                color: context.colorScheme.outlineVariant.withValues(
+                  alpha: 0.3,
+                ),
+              ),
+              _buildLanguageItem(
+                label: context.l10n.settings_language_th,
+                isSelected: currentLanguage == AppLanguage.th,
+                isLast: true,
+                onTap: () => context.read<AppLanguageCubit>().setLanguage(
+                  AppLanguage.th,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLanguageItem({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+    bool isLast = false,
+  }) {
+    return ListTile(
+      title: Text(
+        label,
+        style: AppTextStyle.w500(16).colorOnSurface(context),
+      ),
+      trailing: isSelected
+          ? Icon(
+              Icons.check_circle_rounded,
+              color: context.colorScheme.primary,
+            )
+          : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildThemeItem(ThemeMode mode, bool isSelected) {
+    final isLast = mode == ThemeMode.values.last;
+    final icon = {
+      ThemeMode.system: Icons.brightness_auto_rounded,
+      ThemeMode.light: Icons.light_mode_rounded,
+      ThemeMode.dark: Icons.dark_mode_rounded,
+    }[mode]!;
+
+    final String modeLabel = {
+      ThemeMode.system: context.l10n.settings_theme_system,
+      ThemeMode.light: context.l10n.settings_theme_light,
+      ThemeMode.dark: context.l10n.settings_theme_dark,
+    }[mode]!;
+
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(
+            icon,
+            color: isSelected
+                ? context.colorScheme.primary
+                : context.colorScheme.onSurfaceVariant,
+          ),
+          title: Text(
+            modeLabel,
+            style: AppTextStyle.w500(16).colorOnSurface(context),
+          ),
+          trailing: isSelected
+              ? Icon(
+                  Icons.check_circle_rounded,
+                  color: context.colorScheme.primary,
+                )
+              : null,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          onTap: () => context.read<ThemeModeCubit>().set(mode),
+        ),
+        if (!isLast)
+          Divider(
+            indent: 56,
+            endIndent: 20,
+            height: 1,
+            color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
+          ),
+      ],
+    );
+  }
+
+  Widget _logoutButton() {
+    return ListTile(
+      leading: Icon(
+        Icons.logout_rounded,
+        color: context.appColors.negative,
+      ),
+      title: Text(
+        context.l10n.settings_button_logout,
+        style: AppTextStyle.w600(
+          16,
+        ).copyWith(color: context.appColors.negative),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(
+          color: context.appColors.negative.withValues(alpha: 0.2),
+        ),
+      ),
+      onTap: () => _cubit.logout(),
+    );
+  }
+
+  Widget _buildAppVersion() {
+    return BlocSelector<
+      SettingsScreenCubit,
+      SettingsScreenState,
+      (String, String)
+    >(
+      selector: (state) => (state.appName, state.version),
+      builder: (context, info) {
+        final (appName, version) = info;
+        return Center(
+          child: Column(
+            children: [
+              Text(
+                appName,
+                style: AppTextStyle.w600(14).colorOnSurface(context),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                context.l10n.settings_version_label(version),
+                style: AppTextStyle.w400(12).colorOnSurfaceVariant(context),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

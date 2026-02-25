@@ -1,5 +1,5 @@
-import 'package:app_template/data/models/point_transaction.dart';
-import 'package:app_template/domain/core/result.dart';
+import 'package:jenosize/data/models/point_transaction.dart';
+import 'package:jenosize/domain/core/result.dart';
 
 abstract class MemberRepository {
   Future<Result<bool>> getMembershipStatus();

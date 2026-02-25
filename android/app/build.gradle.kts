@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app_template"
+    namespace = "com.example.jenosize"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -33,15 +33,15 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            applicationId = "com.example.app_template.dev"
+            applicationId = "com.example.jenosize.dev"
         }
         create("uat") {
             dimension = "env"
-            applicationId = "com.example.app_template.uat"
+            applicationId = "com.example.jenosize.uat"
         }
         create("prod") {
             dimension = "env"
-            applicationId = "com.example.app_template"
+            applicationId = "com.example.jenosize"
         }
     }
 

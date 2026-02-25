@@ -1,6 +1,6 @@
 import 'dart:developer' as dev;
 
-import 'package:app_template/domain/storages/secure_storage.dart';
+import 'package:jenosize/domain/storages/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageImpl implements SecureStorage {

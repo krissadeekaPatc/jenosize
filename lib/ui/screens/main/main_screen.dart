@@ -1,17 +1,18 @@
-import 'package:app_template/app/initializers/dependencies_initializer.dart';
-import 'package:app_template/ui/screens/home/cubit/home_screen_cubit.dart';
-import 'package:app_template/ui/screens/home/home_screen.dart';
-import 'package:app_template/ui/screens/main/cubit/main_screen_cubit.dart';
-import 'package:app_template/ui/screens/main/cubit/main_screen_state.dart';
-import 'package:app_template/ui/screens/main/main_screen_tab.dart';
-import 'package:app_template/ui/screens/membership/cubit/membership_screen_cubit.dart';
-import 'package:app_template/ui/screens/membership/membership_screen.dart';
-import 'package:app_template/ui/screens/point_track/cubit/point_track_screen_cubit.dart';
-import 'package:app_template/ui/screens/point_track/point_track_screen.dart';
-import 'package:app_template/ui/screens/settings/cubit/settings_screen_cubit.dart';
-import 'package:app_template/ui/screens/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jenosize/app/initializers/dependencies_initializer.dart';
+import 'package:jenosize/ui/global_widgets/loading_overlay.dart';
+import 'package:jenosize/ui/screens/home/cubit/home_screen_cubit.dart';
+import 'package:jenosize/ui/screens/home/home_screen.dart';
+import 'package:jenosize/ui/screens/main/cubit/main_screen_cubit.dart';
+import 'package:jenosize/ui/screens/main/cubit/main_screen_state.dart';
+import 'package:jenosize/ui/screens/main/main_screen_tab.dart';
+import 'package:jenosize/ui/screens/membership/cubit/membership_screen_cubit.dart';
+import 'package:jenosize/ui/screens/membership/membership_screen.dart';
+import 'package:jenosize/ui/screens/point_track/cubit/point_track_screen_cubit.dart';
+import 'package:jenosize/ui/screens/point_track/point_track_screen.dart';
+import 'package:jenosize/ui/screens/settings/cubit/settings_screen_cubit.dart';
+import 'package:jenosize/ui/screens/settings/settings_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -24,16 +25,28 @@ class MainScreen extends StatelessWidget {
           create: (_) => MainScreenCubit(),
         ),
         BlocProvider(
-          create: (_) => HomeScreenCubit(getIt()),
+          create: (_) => HomeScreenCubit(
+            campaignRepository: getIt(),
+          ),
         ),
         BlocProvider(
-          create: (_) => PointTrackScreenCubit(),
+          create: (_) => PointTrackScreenCubit(
+            pointRepository: getIt(),
+            sessionCubit: getIt(),
+          ),
         ),
         BlocProvider(
-          create: (_) => MembershipScreenCubit(),
+          create: (_) => MembershipScreenCubit(
+            sessionCubit: getIt(),
+            pointRepository: getIt(),
+          ),
         ),
         BlocProvider(
-          create: (_) => SettingsScreenCubit(),
+          create: (_) => SettingsScreenCubit(
+            sessionCubit: getIt(),
+            tokenVault: getIt(),
+            appStorage: getIt(),
+          ),
         ),
       ],
       child: const MainScreenView(),
@@ -46,27 +59,45 @@ class MainScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = [
+      context.select<HomeScreenCubit, bool>(
+        (c) => c.state.status.isLoading,
+      ),
+      context.select<PointTrackScreenCubit, bool>(
+        (c) => c.state.status.isLoading,
+      ),
+      context.select<MembershipScreenCubit, bool>(
+        (c) => c.state.status.isLoading,
+      ),
+      context.select<SettingsScreenCubit, bool>(
+        (c) => c.state.status.isLoading,
+      ),
+    ].any((e) => e == true);
+
     return BlocSelector<MainScreenCubit, MainScreenState, MainScreenTab>(
       selector: (state) => state.selectedTab,
       builder: (context, selectedTab) {
-        return Scaffold(
-          extendBody: true,
-          body: IndexedStack(
-            index: selectedTab.index,
-            children: const [
-              HomeScreenView(),
-              PointTrackScreenView(),
-              MembershipScreenView(),
-              SettingsScreenView(),
-            ],
-          ),
-          bottomNavigationBar: _CustomBottomNavBar(
-            selectedTab: selectedTab,
-            onTabSelected: (index) {
-              context.read<MainScreenCubit>().changeTab(
-                MainScreenTab.values[index],
-              );
-            },
+        return LoadingOverlay(
+          isLoading: isLoading,
+          child: Scaffold(
+            extendBody: true,
+            body: IndexedStack(
+              index: selectedTab.index,
+              children: const [
+                HomeScreenView(),
+                PointTrackScreenView(),
+                MembershipScreenView(),
+                SettingsScreenView(),
+              ],
+            ),
+            bottomNavigationBar: _CustomBottomNavBar(
+              selectedTab: selectedTab,
+              onTabSelected: (index) {
+                context.read<MainScreenCubit>().changeTab(
+                  MainScreenTab.values[index],
+                );
+              },
+            ),
           ),
         );
       },

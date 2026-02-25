@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 enum SplashScreenStatus {
   initial,
-  newVersionAvailable,
   authenticated,
   unauthenticated,
 }
@@ -34,17 +33,6 @@ class SplashScreenState extends Equatable {
       status: status ?? this.status,
       appStoreLink: appStoreLink ?? this.appStoreLink,
       storeVersion: storeVersion ?? this.storeVersion,
-    );
-  }
-
-  SplashScreenState newVersionAvailable({
-    required String appStoreLink,
-    required String? storeVersion,
-  }) {
-    return copyWith(
-      status: SplashScreenStatus.newVersionAvailable,
-      appStoreLink: appStoreLink,
-      storeVersion: storeVersion,
     );
   }
 

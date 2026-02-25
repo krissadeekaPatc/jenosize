@@ -1,5 +1,5 @@
-import 'package:app_template/data/models/auth.dart';
-import 'package:app_template/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
 
 class AuthRemoteDataSource {
   const AuthRemoteDataSource();

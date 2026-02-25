@@ -1,7 +1,7 @@
-import 'package:app_template/data/models/user.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/domain/repositories/user_repository.dart';
-import 'package:app_template/ui/cubits/session/session_cubit.dart';
+import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/repositories/user_repository.dart';
+import 'package:jenosize/ui/cubits/session/session_cubit.dart';
 
 class GetUserUseCase {
   final SessionCubit _sessionCubit;
@@ -13,6 +13,11 @@ class GetUserUseCase {
   );
 
   Future<Result<User>> call() async {
+    final currentUser = _sessionCubit.state.user;
+    if (currentUser != null) {
+      return Success(currentUser);
+    }
+
     final result = await _userRepository.getProfile();
 
     switch (result) {

@@ -1,9 +1,9 @@
-import 'package:app_template/data/models/auth.dart';
-import 'package:app_template/data/models/requests/login_with_email_request.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/domain/repositories/auth_repository.dart';
-import 'package:app_template/domain/storages/token_vault.dart';
-import 'package:app_template/domain/use_cases/get_user_use_case.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/repositories/auth_repository.dart';
+import 'package:jenosize/domain/storages/token_vault.dart';
+import 'package:jenosize/domain/use_cases/get_user_use_case.dart';
 
 class LoginWithEmailUseCase {
   final AuthRepository _authRepository;

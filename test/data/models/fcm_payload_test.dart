@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/fcm_payload.dart';
+import 'package:jenosize/data/models/fcm_payload.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

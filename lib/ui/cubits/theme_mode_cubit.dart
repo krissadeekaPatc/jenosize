@@ -1,4 +1,4 @@
-import 'package:app_template/domain/storages/app_storage.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

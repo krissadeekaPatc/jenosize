@@ -1,15 +1,11 @@
-import 'package:app_template/app/initializers/dependencies_initializer.dart';
-import 'package:app_template/app/router/app_routes.dart';
-import 'package:app_template/common/app_utils.dart';
-import 'package:app_template/domain/use_cases/splash_use_case.dart';
-import 'package:app_template/ui/extensions/build_context_extension.dart';
-import 'package:app_template/ui/screens/splash/cubit/splash_screen_cubit.dart';
-import 'package:app_template/ui/screens/splash/cubit/splash_screen_state.dart';
-import 'package:app_template/ui/utils/app_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:jenosize/app/initializers/dependencies_initializer.dart';
+import 'package:jenosize/app/router/app_routes.dart';
+import 'package:jenosize/domain/use_cases/splash_use_case.dart';
+import 'package:jenosize/ui/screens/splash/cubit/splash_screen_cubit.dart';
+import 'package:jenosize/ui/screens/splash/cubit/splash_screen_state.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -18,13 +14,12 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final sessionCubit = context.sessionCubit;
         return SplashScreenCubit(
-          sessionCubit: sessionCubit,
+          sessionCubit: getIt(),
           useCase: SplashScreenUseCase(
             tokenVault: getIt(),
-            storeVersionRepository: getIt(),
             userRepository: getIt(),
+            sessionCubit: getIt(),
           ),
         );
       },
@@ -54,15 +49,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     switch (state.status) {
       case SplashScreenStatus.initial:
         break;
-
-      case SplashScreenStatus.newVersionAvailable:
-        final appStoreLink = state.appStoreLink;
-        if (appStoreLink == null) return;
-        _alertNewVersionAvailable(
-          appStoreLink: appStoreLink,
-          storeVersion: state.storeVersion,
-        );
-
       case SplashScreenStatus.authenticated:
         context.go(AppRoutes.main);
 
@@ -76,26 +62,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     return BlocListener<SplashScreenCubit, SplashScreenState>(
       listener: _listener,
       child: const Scaffold(body: Center(child: Text('Splash'))),
-    );
-  }
-
-  void _alertNewVersionAvailable({
-    required String appStoreLink,
-    required String? storeVersion,
-  }) {
-    AppAlert.dialog(
-      context,
-      title: context.l10n.new_version_available_dialog_title,
-      message: context.l10n.new_version_available_dialog_message(
-        storeVersion ?? '',
-      ),
-      barrierDismissible: false,
-      onAction: () {
-        AppUtils.launchUrlString(
-          appStoreLink,
-          mode: LaunchMode.externalApplication,
-        );
-      },
     );
   }
 }

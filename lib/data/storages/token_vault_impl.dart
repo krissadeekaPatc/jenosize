@@ -1,6 +1,6 @@
-import 'package:app_template/data/models/auth.dart';
-import 'package:app_template/domain/storages/secure_storage.dart';
-import 'package:app_template/domain/storages/token_vault.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/domain/storages/secure_storage.dart';
+import 'package:jenosize/domain/storages/token_vault.dart';
 
 class TokenVaultImpl implements TokenVault {
   final SecureStorage _secureStorage;

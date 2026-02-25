@@ -1,10 +1,11 @@
-import 'package:app_template/data/models/campaign.dart';
-import 'package:app_template/ui/extensions/build_context_extension.dart';
-import 'package:app_template/ui/screens/home/cubit/home_screen_cubit.dart';
-import 'package:app_template/ui/screens/home/cubit/home_screen_state.dart';
-import 'package:app_template/ui/styles/app_text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jenosize/data/models/campaign.dart';
+import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/screens/home/cubit/home_screen_cubit.dart';
+import 'package:jenosize/ui/screens/home/cubit/home_screen_state.dart';
+import 'package:jenosize/ui/styles/app_text_style.dart';
+import 'package:jenosize/ui/utils/app_alert.dart';
 
 class HomeScreenView extends StatefulWidget {
   const HomeScreenView({super.key});
@@ -20,59 +21,63 @@ class _HomeScreenViewState extends State<HomeScreenView> {
     context.read<HomeScreenCubit>().loadCampaigns();
   }
 
+  void _listener(BuildContext context, HomeScreenState state) {
+    switch (state.status) {
+      case HomeScreenStatus.initial:
+      case HomeScreenStatus.loading:
+      case HomeScreenStatus.ready:
+        break;
+      case HomeScreenStatus.failure:
+        AppAlert.error(context, error: state.error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Campaigns',
-          style: AppTextStyle.w700(20).colorOnSurface(context),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: BlocBuilder<HomeScreenCubit, HomeScreenState>(
-        builder: (context, state) {
-          if (state.status.isLoading && state.campaigns.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state.status == HomeScreenStatus.failure) {
-            return Center(
-              child: Text(
-                'Failed to load campaigns',
-                style: AppTextStyle.w500(16).colorError(context),
-              ),
-            );
-          }
-
-          if (state.campaigns.isEmpty) {
-            return Center(
-              child: Text(
-                'No campaigns available',
-                style: AppTextStyle.w500(16).colorOnSurfaceVariant(context),
-              ),
-            );
-          }
-
-          return ListView.separated(
-            padding: const EdgeInsets.only(
-              left: 24,
-              right: 24,
-              top: 16,
-              bottom: 100,
+    return BlocConsumer<HomeScreenCubit, HomeScreenState>(
+      listenWhen: (previous, current) => previous.status != current.status,
+      listener: _listener,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              context.l10n.home_title_campaigns,
+              style: AppTextStyle.w700(20).colorOnSurface(context),
             ),
-            itemCount: state.campaigns.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 24),
-            itemBuilder: (context, index) {
-              return _CampaignCard(
-                campaign: state.campaigns[index],
-              );
-            },
-          );
-        },
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: _buildBody(state),
+        );
+      },
+    );
+  }
+
+  Widget _buildBody(HomeScreenState state) {
+    if (state.campaigns.isEmpty) {
+      return Center(
+        child: Text(
+          context.l10n.home_empty_campaigns,
+          style: AppTextStyle.w500(16).colorOnSurfaceVariant(context),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 16,
+        bottom: 120,
       ),
+      itemCount: state.campaigns.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 24),
+      itemBuilder: (context, index) {
+        return _CampaignCard(
+          campaign: state.campaigns[index],
+        );
+      },
     );
   }
 }
@@ -107,7 +112,7 @@ class _CampaignCard extends StatelessWidget {
             campaign?.imageUrl ?? '',
             height: 180,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (_, _, _) => Container(
               height: 180,
               color: context.colorScheme.surfaceContainerHighest,
               child: const Icon(Icons.image_not_supported, size: 40),
@@ -147,7 +152,7 @@ class _CampaignCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '+${campaign?.pointsReward ?? 0} Pts',
+                        '+${campaign?.pointsReward ?? 0} ${context.l10n.common_points_suffix}',
                         style: AppTextStyle.w800(
                           16,
                         ).copyWith(color: context.appColors.positive),
@@ -166,7 +171,7 @@ class _CampaignCard extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Join Now',
+                        context.l10n.home_button_join_now,
                         style: AppTextStyle.w700(14).colorOnPrimary(context),
                       ),
                     ),

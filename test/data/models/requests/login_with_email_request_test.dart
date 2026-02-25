@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,5 +1,5 @@
-import 'package:app_template/data/models/campaign.dart';
-import 'package:app_template/domain/core/app_error.dart';
+import 'package:jenosize/data/models/campaign.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 import 'package:equatable/equatable.dart';
 
 enum HomeScreenStatus {
@@ -48,9 +48,12 @@ class HomeScreenState extends Equatable {
     );
   }
 
-  HomeScreenState ready() {
+  HomeScreenState ready({
+    List<Campaign?>? campaigns,
+  }) {
     return copyWith(
       status: HomeScreenStatus.ready,
+      campaigns: campaigns ?? this.campaigns,
     );
   }
 

@@ -1,9 +1,8 @@
-import 'package:app_template/ui/styles/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jenosize/ui/styles/app_colors.dart';
 
 class AppTheme {
-  final TextTheme textTheme = const TextTheme();
-
   const AppTheme();
 
   ThemeData theme(
@@ -14,7 +13,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: colorScheme.brightness,
       colorScheme: colorScheme,
-      textTheme: textTheme.apply(
+      textTheme: GoogleFonts.ibmPlexSansThaiTextTheme().apply(
         bodyColor: colorScheme.onSurface,
         displayColor: colorScheme.onSurface,
       ),

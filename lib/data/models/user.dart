@@ -1,4 +1,4 @@
-import 'package:app_template/data/enums/user_gender.dart';
+import 'package:jenosize/data/enums/user_gender.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,6 +13,7 @@ class User extends Equatable {
   @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)
   final UserGender? gender;
   final int? totalPoints;
+  final bool? isMember;
 
   const User({
     this.id,
@@ -21,6 +22,7 @@ class User extends Equatable {
     this.email,
     this.gender,
     this.totalPoints,
+    this.isMember,
   });
 
   @override
@@ -31,6 +33,7 @@ class User extends Equatable {
     email,
     gender,
     totalPoints,
+    isMember,
   ];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

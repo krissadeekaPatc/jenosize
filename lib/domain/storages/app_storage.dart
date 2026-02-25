@@ -2,6 +2,7 @@ enum StorageKey {
   firstOpenEpoch,
   language,
   themeMode,
+  user,
 }
 
 abstract class AppStorage {

@@ -1,4 +1,4 @@
-import 'package:app_template/data/api_client/api_client_impl.dart';
+import 'package:jenosize/data/api_client/api_client_impl.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

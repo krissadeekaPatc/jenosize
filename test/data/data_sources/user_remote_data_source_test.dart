@@ -1,6 +1,6 @@
-import 'package:app_template/data/data_sources/user_remote_data_source.dart';
-import 'package:app_template/data/enums/user_gender.dart';
-import 'package:app_template/data/models/user.dart';
+import 'package:jenosize/data/data_sources/user_remote_data_source.dart';
+import 'package:jenosize/data/enums/user_gender.dart';
+import 'package:jenosize/data/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

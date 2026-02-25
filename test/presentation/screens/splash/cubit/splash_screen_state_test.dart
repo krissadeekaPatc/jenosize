@@ -1,5 +1,5 @@
-import 'package:app_template/ui/screens/splash/cubit/splash_screen_state.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/ui/screens/splash/cubit/splash_screen_state.dart';
 
 void main() {
   group('SplashScreenState', () {
@@ -24,20 +24,6 @@ void main() {
       expect(updatedState.appStoreLink, equals('http://example.com'));
       expect(updatedState.storeVersion, equals('1.2.3'));
     });
-
-    test(
-      'newVersionAvailable returns state with newVersionAvailable status and updates appStoreLink and storeVersion',
-      () {
-        const state = SplashScreenState();
-        final updated = state.newVersionAvailable(
-          appStoreLink: 'http://appstore.link',
-          storeVersion: '2.0.0',
-        );
-        expect(updated.status, SplashScreenStatus.newVersionAvailable);
-        expect(updated.appStoreLink, equals('http://appstore.link'));
-        expect(updated.storeVersion, equals('2.0.0'));
-      },
-    );
 
     test('authenticated returns state with authenticated status', () {
       const state = SplashScreenState();

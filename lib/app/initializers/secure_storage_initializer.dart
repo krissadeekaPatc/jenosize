@@ -1,6 +1,6 @@
-import 'package:app_template/data/storages/secure_storage_impl.dart';
-import 'package:app_template/domain/storages/app_storage.dart';
-import 'package:app_template/domain/storages/secure_storage.dart';
+import 'package:jenosize/data/storages/secure_storage_impl.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
+import 'package:jenosize/domain/storages/secure_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 Future<SecureStorage> initializeSecureStorage(AppStorage storage) async {

@@ -1,8 +1,8 @@
-// import 'package:app_template/data/models/requests/login_with_email_request.dart';
-// import 'package:app_template/domain/core/app_error.dart';
-// import 'package:app_template/domain/core/result.dart';
-// import 'package:app_template/ui/screens/login/cubit/login_screen_cubit.dart';
-// import 'package:app_template/ui/screens/login/cubit/login_screen_state.dart';
+// import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+// import 'package:jenosize/domain/core/app_error.dart';
+// import 'package:jenosize/domain/core/result.dart';
+// import 'package:jenosize/ui/screens/login/cubit/login_screen_cubit.dart';
+// import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
 // import 'package:bloc_test/bloc_test.dart';
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:mocktail/mocktail.dart';

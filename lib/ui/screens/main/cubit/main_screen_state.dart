@@ -1,4 +1,4 @@
-import 'package:app_template/ui/screens/main/main_screen_tab.dart';
+import 'package:jenosize/ui/screens/main/main_screen_tab.dart';
 import 'package:equatable/equatable.dart';
 
 class MainScreenState extends Equatable {

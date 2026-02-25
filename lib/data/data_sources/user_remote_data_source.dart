@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/user.dart';
+import 'package:jenosize/data/models/user.dart';
 
 class UserRemoteDataSource {
   const UserRemoteDataSource();
@@ -8,6 +8,7 @@ class UserRemoteDataSource {
 
     return const User(
       id: 'usr_mock_001',
+      totalPoints: 500,
       firstName: 'Jeno',
       lastName: 'Tester',
       email: 'admin@jenosize.com',

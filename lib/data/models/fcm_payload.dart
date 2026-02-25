@@ -1,5 +1,5 @@
-import 'package:app_template/common/logger.dart';
-import 'package:app_template/data/enums/fcm_target_type.dart';
+import 'package:jenosize/common/logger.dart';
+import 'package:jenosize/data/enums/fcm_target_type.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 

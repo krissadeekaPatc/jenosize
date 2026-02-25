@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:app_template/common/app_language.dart';
-import 'package:app_template/domain/storages/app_storage.dart';
+import 'package:jenosize/common/app_language.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 

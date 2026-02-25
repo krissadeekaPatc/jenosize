@@ -1,8 +1,8 @@
-import 'package:app_template/data/data_sources/campaign_remote_data_source.dart';
-import 'package:app_template/data/models/campaign.dart';
-import 'package:app_template/domain/core/app_error.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/domain/repositories/campaign_repository.dart';
+import 'package:jenosize/data/data_sources/campaign_remote_data_source.dart';
+import 'package:jenosize/data/models/campaign.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/repositories/campaign_repository.dart';
 
 class CampaignRepositoryImpl implements CampaignRepository {
   final CampaignRemoteDataSource _dataSource;

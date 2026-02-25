@@ -23,6 +23,7 @@ User _$UserFromJson(Map<String, dynamic> json) => $checkedCreate('User', json, (
       ),
     ),
     totalPoints: $checkedConvert('totalPoints', (v) => (v as num?)?.toInt()),
+    isMember: $checkedConvert('isMember', (v) => v as bool?),
   );
   return val;
 });
@@ -34,6 +35,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   'email': ?instance.email,
   'gender': ?_$UserGenderEnumMap[instance.gender],
   'totalPoints': ?instance.totalPoints,
+  'isMember': ?instance.isMember,
 };
 
 const _$UserGenderEnumMap = {

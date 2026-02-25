@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:app_template/data/models/point_transaction.dart';
-import 'package:app_template/domain/core/app_error.dart';
-import 'package:app_template/domain/core/result.dart';
-import 'package:app_template/domain/repositories/member_repository.dart';
-import 'package:app_template/domain/storages/app_storage.dart';
+import 'package:jenosize/data/models/point_transaction.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/repositories/member_repository.dart';
+import 'package:jenosize/domain/storages/app_storage.dart';
 
 class MemberRepositoryImpl implements MemberRepository {
   final AppStorage _appStorage;

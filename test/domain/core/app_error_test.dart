@@ -1,4 +1,4 @@
-import 'package:app_template/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 

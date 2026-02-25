@@ -1,5 +1,5 @@
-import 'package:app_template/data/enums/user_gender.dart';
-import 'package:app_template/data/models/user.dart';
+import 'package:jenosize/data/enums/user_gender.dart';
+import 'package:jenosize/data/models/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

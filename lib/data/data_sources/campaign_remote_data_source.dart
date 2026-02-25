@@ -1,4 +1,4 @@
-import 'package:app_template/data/models/campaign.dart';
+import 'package:jenosize/data/models/campaign.dart';
 
 class CampaignRemoteDataSource {
   Future<List<Campaign>> getCampaigns() async {

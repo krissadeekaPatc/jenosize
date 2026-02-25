@@ -1,7 +1,7 @@
-import 'package:app_template/data/enums/user_gender.dart';
-import 'package:app_template/data/models/user.dart';
-import 'package:app_template/data/repositories/user_repository_impl.dart';
-import 'package:app_template/domain/core/result.dart';
+import 'package:jenosize/data/enums/user_gender.dart';
+import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/data/repositories/user_repository_impl.dart';
+import 'package:jenosize/domain/core/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

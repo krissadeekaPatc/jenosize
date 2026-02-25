@@ -1,7 +1,7 @@
-import 'package:app_template/data/models/auth.dart';
-import 'package:app_template/data/models/requests/login_with_email_request.dart';
-import 'package:app_template/data/repositories/auth_repository_impl.dart';
-import 'package:app_template/domain/core/result.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/data/repositories/auth_repository_impl.dart';
+import 'package:jenosize/domain/core/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

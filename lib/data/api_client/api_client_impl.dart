@@ -1,4 +1,4 @@
-import 'package:app_template/domain/api_client/api_client.dart';
+import 'package:jenosize/domain/api_client/api_client.dart';
 import 'package:dio/dio.dart';
 
 class ApiClientImpl implements ApiClient {
