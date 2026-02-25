@@ -13,7 +13,7 @@ void main() {
 
   setUp(() {
     mockApiClient = MockApiClient();
-    dataSource = UserRemoteDataSource(mockApiClient);
+    dataSource = const UserRemoteDataSource();
   });
 
   group('UserRemoteDataSource.me', () {
@@ -38,7 +38,7 @@ void main() {
         () => mockApiClient.get(testPath),
       ).thenAnswer((_) async => testResponse);
 
-      final user = await dataSource.me();
+      final user = await dataSource.getProfile();
 
       expect(user, isA<User>());
       expect(user.id, equals('1'));

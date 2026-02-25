@@ -1,0 +1,29 @@
+{
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+      80
+    ]
+  },
+  "dart.lineLength": 80,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.insertSpaces": false,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "task.quickOpen.history": 0,
+  "arb-editor.suppressedWarnings": [
+    "mismatched_brackets",
+    "metadata_for_missing_key",
+    "invalid_key",
+    "missing_metadata_for_key",
+    "invalid_placeholder",
+    "missing_other_in_icu",
+    "unknown_icu_message_type",
+    "placeholder_without_metadata",
+    "missing_placeholder_with_metadata",
+    "missing_messages_from_template"
+  ],
+  "dart.flutterSdkPath": ".fvm/versions/3.41.2"
+}

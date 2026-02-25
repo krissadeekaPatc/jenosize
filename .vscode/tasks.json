@@ -1,0 +1,111 @@
+{
+  "version": "2.0.0",
+  "inputs": [
+    {
+      "id": "flavor",
+      "type": "pickString",
+      "description": "Select a flavor",
+      "options": ["uat", "prod"]
+    }
+  ],
+  "tasks": [
+    {
+      "label": "dart analyzer_script.dart",
+      "group": "build",
+      "type": "dart",
+      "command": "dart",
+      "args": ["analyzer_script.dart"]
+    },
+    {
+      "label": "flutter gen-l10n",
+      "group": "build",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["gen-l10n"]
+    },
+    {
+      "label": "dart run build_runner clean",
+      "group": "build",
+      "type": "dart",
+      "command": "dart",
+      "args": ["run", "build_runner", "clean"]
+    },
+    {
+      "label": "dart run build_runner build",
+      "group": "build",
+      "type": "dart",
+      "command": "dart",
+      "args": ["run", "build_runner", "build"]
+    },
+    {
+      "label": "flutter pub get",
+      "group": "build",
+      "type": "flutter",
+      "command": "flutter",
+      "args": ["pub", "get"]
+    },
+    {
+      "label": "Build APK",
+      "group": "build",
+      "type": "flutter",
+      "command": "flutter",
+      "args": [
+        "build",
+        "apk",
+        "--release",
+        "--flavor=${input:flavor}",
+        "--dart-define-from-file=.env.${input:flavor}"
+      ]
+    },
+    {
+      "label": "Build AAB obfuscate (prod)",
+      "group": "build",
+      "type": "flutter",
+      "command": "flutter",
+      "args": [
+        "build",
+        "appbundle",
+        "--release",
+        "--flavor=prod",
+        "--dart-define-from-file=.env.prod",
+        "--obfuscate",
+        "--split-debug-info=./debug-info/bundle/prod"
+      ]
+    },
+    {
+      "label": "firebase crashlytics:symbols:upload AAB (prod)",
+      "group": "build",
+      "type": "shell",
+      "command": "firebase",
+      "args": [
+        "crashlytics:symbols:upload",
+        "--app",
+        "1:858462402558:android:b2140b2d0c0583b14d72af",
+        "./debug-info/bundle/prod"
+      ]
+    },
+    {
+      "label": "Build IPA",
+      "group": "build",
+      "type": "flutter",
+      "command": "flutter",
+      "args": [
+        "build",
+        "ipa",
+        "--release",
+        "--flavor=${input:flavor}",
+        "--dart-define-from-file=.env.${input:flavor}"
+      ]
+    },
+    {
+      "label": "Build AAB obfuscate and upload crashlytics (prod)",
+      "group": "build",
+      "type": "shell",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build AAB obfuscate (prod)",
+        "Firebase upload crashlytics AAB (prod)"
+      ]
+    }
+  ]
+}

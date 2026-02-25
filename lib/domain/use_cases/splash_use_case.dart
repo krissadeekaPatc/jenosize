@@ -38,7 +38,7 @@ class SplashScreenUseCase {
       return const Failure(AppError(message: 'Access token not found'));
     }
 
-    final result = await userRepository.me();
+    final result = await userRepository.getProfile();
     switch (result) {
       case Success(:final value):
         return Success(value);

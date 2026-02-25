@@ -1,0 +1,74 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "dev",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "dev", "--dart-define-from-file", ".env.dev"]
+    },
+    {
+      "name": "dev (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--flavor", "dev", "--dart-define-from-file", ".env.dev"]
+    },
+    {
+      "name": "dev (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "dev", "--dart-define-from-file", ".env.dev"]
+    },
+    {
+      "name": "uat",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "uat", "--dart-define-from-file", ".env.uat"]
+    },
+    {
+      "name": "uat (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--flavor", "uat", "--dart-define-from-file", ".env.uat"]
+    },
+    {
+      "name": "uat (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "uat", "--dart-define-from-file", ".env.uat"]
+    },
+    {
+      "name": "prod",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--flavor", "prod", "--dart-define-from-file", ".env.prod"]
+    },
+    {
+      "name": "prod (profile)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--flavor", "prod", "--dart-define-from-file", ".env.prod"]
+    },
+    {
+      "name": "prod (release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--flavor", "prod", "--dart-define-from-file", ".env.prod"]
+    }
+  ]
+}

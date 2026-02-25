@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     '/Users/non/Downloads/app-template-flutter-main/build/ios/Debug-dev-iphonesimulator/Runner.app/Runner'
-relocations:     []
-...

@@ -1,18 +1,16 @@
 import 'package:app_template/data/models/auth.dart';
 import 'package:app_template/data/models/requests/login_with_email_request.dart';
-import 'package:app_template/domain/api_client/api_client.dart';
 
 class AuthRemoteDataSource {
-  final ApiClient _apiClient;
-
-  const AuthRemoteDataSource(this._apiClient);
+  const AuthRemoteDataSource();
 
   Future<Auth> loginWithEmail({required LoginWithEmailRequest request}) async {
-    const path = '/api/app/auth/credentials/signin';
-    final response = await _apiClient.post(
-      path,
-      data: request.toJson(),
+    await Future.delayed(const Duration(milliseconds: 1500));
+
+    return Auth(
+      accessToken: 'mock_access_token_jenosize_123',
+      refreshToken: 'mock_refresh_token_jenosize_123',
+      expiredAt: DateTime.now().add(const Duration(days: 1)),
     );
-    return Auth.fromJson(response.data['data']);
   }
 }

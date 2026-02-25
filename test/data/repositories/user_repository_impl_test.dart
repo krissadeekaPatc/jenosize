@@ -28,9 +28,11 @@ void main() {
     test(
       'should return a `User` when remote data source returns a `User`',
       () async {
-        when(() => mockRemoteDataSource.me()).thenAnswer((_) async => user);
+        when(
+          () => mockRemoteDataSource.getProfile(),
+        ).thenAnswer((_) async => user);
 
-        final result = await repository.me();
+        final result = await repository.getProfile();
 
         expect(result, isA<Success<User>>());
         expect((result as Success<User>).value, isA<User>());
@@ -40,7 +42,7 @@ void main() {
         expect(result.value.email, equals(user.email));
         expect(result.value.gender, equals(UserGender.male));
 
-        verify(() => mockRemoteDataSource.me()).called(1);
+        verify(() => mockRemoteDataSource.getProfile()).called(1);
       },
     );
 
@@ -49,13 +51,13 @@ void main() {
       () async {
         final exception = Exception('Failed to fetch user');
         when(
-          () => mockRemoteDataSource.me(),
+          () => mockRemoteDataSource.getProfile(),
         ).thenAnswer((_) async => throw exception);
 
-        final result = await repository.me();
+        final result = await repository.getProfile();
 
         expect(result, isA<Failure>());
-        verify(() => mockRemoteDataSource.me()).called(1);
+        verify(() => mockRemoteDataSource.getProfile()).called(1);
       },
     );
   });

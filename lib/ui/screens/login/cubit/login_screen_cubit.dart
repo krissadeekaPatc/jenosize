@@ -5,26 +5,17 @@ import 'package:app_template/ui/screens/login/cubit/login_screen_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreenCubit extends Cubit<LoginScreenState> {
-  final LoginWithEmailUseCase loginWithEmailUseCase;
+  final LoginWithEmailUseCase _loginUseCase;
 
-  LoginScreenCubit({required this.loginWithEmailUseCase})
-    : super(const LoginScreenState());
+  LoginScreenCubit(this._loginUseCase) : super(const LoginScreenState());
 
-  void skipLogin() async {
-    emit(state.loading());
-    await Future.delayed(const Duration(milliseconds: 500));
-    emit(state.success());
-  }
+  Future<void> login(String email, String password) async {
+    if (state.isLoading) return;
 
-  void login() async {
     emit(state.loading());
 
-    final result = await loginWithEmailUseCase.call(
-      request: const LoginWithEmailRequest(
-        email: '',
-        password: '',
-      ),
-    );
+    final request = LoginWithEmailRequest(email: email, password: password);
+    final result = await _loginUseCase.call(request: request);
 
     switch (result) {
       case Success():

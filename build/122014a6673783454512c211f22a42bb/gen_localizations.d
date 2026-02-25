@@ -1,1 +1,0 @@
- /Users/non/Downloads/app-template-flutter-main/lib/generated/app_localizations_en.dart /Users/non/Downloads/app-template-flutter-main/untranslated.txt /Users/non/Downloads/app-template-flutter-main/lib/generated/app_localizations.dart:  /Users/non/Downloads/app-template-flutter-main/l10n.yaml /Users/non/Downloads/app-template-flutter-main/assets/localizations/app_en.arb

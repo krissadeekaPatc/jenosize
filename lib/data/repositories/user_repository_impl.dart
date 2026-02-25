@@ -10,9 +10,9 @@ class UserRepositoryImpl implements UserRepository {
   const UserRepositoryImpl(this._remoteDataSource);
 
   @override
-  Future<Result<User>> me() async {
+  Future<Result<User>> getProfile() async {
     try {
-      final result = await _remoteDataSource.me();
+      final result = await _remoteDataSource.getProfile();
       return Success(result);
     } catch (error) {
       return Failure(AppError.from(error));

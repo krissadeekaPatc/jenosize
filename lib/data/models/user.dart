@@ -12,6 +12,7 @@ class User extends Equatable {
   final String? email;
   @JsonKey(unknownEnumValue: JsonKey.nullForUndefinedEnumValue)
   final UserGender? gender;
+  final int? totalPoints;
 
   const User({
     this.id,
@@ -19,6 +20,7 @@ class User extends Equatable {
     this.lastName,
     this.email,
     this.gender,
+    this.totalPoints,
   });
 
   @override
@@ -28,6 +30,7 @@ class User extends Equatable {
     lastName,
     email,
     gender,
+    totalPoints,
   ];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
