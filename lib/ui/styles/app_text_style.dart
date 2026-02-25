@@ -5,9 +5,7 @@ import 'package:jenosize/ui/extensions/build_context_extension.dart';
 class AppTextStyle {
   AppTextStyle._();
 
-  static TextStyle get _base => TextStyle(
-    fontFamily: GoogleFonts.ibmPlexSansThai().fontFamily!,
-  );
+  static TextStyle get _base => GoogleFonts.ibmPlexSansThai();
 
   /// Thin
   static TextStyle w100(double fontSize) =>
