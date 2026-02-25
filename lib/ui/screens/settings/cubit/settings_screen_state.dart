@@ -1,5 +1,5 @@
-import 'package:jenosize/domain/core/app_error.dart';
 import 'package:equatable/equatable.dart';
+import 'package:jenosize/domain/core/app_error.dart';
 
 enum SettingsScreenStatus {
   initial,
@@ -14,8 +14,8 @@ enum SettingsScreenStatus {
 
 class SettingsScreenState extends Equatable {
   final SettingsScreenStatus status;
-  final String appName; // เพิ่มตรงนี้
-  final String version; // เพิ่มตรงนี้
+  final String appName;
+  final String version;
   final AppError? error;
 
   const SettingsScreenState({

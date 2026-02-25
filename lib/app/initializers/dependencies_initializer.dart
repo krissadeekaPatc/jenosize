@@ -1,22 +1,19 @@
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:jenosize/app/initializers/api_client_initializer.dart';
 import 'package:jenosize/app/initializers/secure_storage_initializer.dart';
 import 'package:jenosize/data/data_sources/auth_remote_data_source.dart';
 import 'package:jenosize/data/data_sources/campaign_remote_data_source.dart';
 import 'package:jenosize/data/data_sources/point_remote_data_source.dart';
-import 'package:jenosize/data/data_sources/store_version_remote_data_source.dart';
 import 'package:jenosize/data/data_sources/user_remote_data_source.dart';
 import 'package:jenosize/data/repositories/auth_repository_impl.dart';
 import 'package:jenosize/data/repositories/campaign_repository_impl.dart';
 import 'package:jenosize/data/repositories/point_repository_impl.dart';
-import 'package:jenosize/data/repositories/store_version_repository_impl.dart';
 import 'package:jenosize/data/repositories/user_repository_impl.dart';
 import 'package:jenosize/data/storages/app_storage_impl.dart';
 import 'package:jenosize/data/storages/token_vault_impl.dart';
 import 'package:jenosize/domain/repositories/auth_repository.dart';
 import 'package:jenosize/domain/repositories/campaign_repository.dart';
 import 'package:jenosize/domain/repositories/point_repository.dart';
-import 'package:jenosize/domain/repositories/store_version_repository.dart';
 import 'package:jenosize/domain/repositories/user_repository.dart';
 import 'package:jenosize/domain/storages/app_storage.dart';
 import 'package:jenosize/domain/storages/secure_storage.dart';
@@ -53,35 +50,25 @@ Future<void> initializeDependencies() async {
   final sessionCubit = SessionCubit(appStorage: storage);
   getIt.registerSingleton<SessionCubit>(sessionCubit);
 
-  // final apiClient = initializeApiClient(
-  //   tokenVault: tokenVault,
-  //   appLanguageCubit: appLanguageCubit,
-  // );
-
-  final externalApiClient = initializeExternalApiClient();
+  getIt.registerLazySingleton<AssetBundle>(() => rootBundle);
 
   /// Repositories
-
-  getIt.registerLazySingleton<StoreVersionRepository>(
-    () => StoreVersionRepositoryImpl(
-      StoreVersionRemoteDataSource(externalApiClient),
-    ),
-  );
   getIt.registerLazySingleton<AuthRepository>(
-    () => const AuthRepositoryImpl(AuthRemoteDataSource()),
+    () => AuthRepositoryImpl(AuthRemoteDataSource(bundle: getIt())),
   );
+
   getIt.registerLazySingleton<UserRepository>(
-    () => const UserRepositoryImpl(UserRemoteDataSource()),
+    () => UserRepositoryImpl(UserRemoteDataSource(bundle: getIt())),
   );
 
   getIt.registerLazySingleton<CampaignRepository>(
     () => CampaignRepositoryImpl(
-      CampaignRemoteDataSource(),
+      CampaignRemoteDataSource(bundle: getIt()),
     ),
   );
 
   getIt.registerLazySingleton<PointRepository>(
-    () => const PointRepositoryImpl(PointRemoteDataSource()),
+    () => PointRepositoryImpl(PointRemoteDataSource(bundle: getIt())),
   );
 
   getIt.registerLazySingleton<GetPointTransactionsUseCase>(

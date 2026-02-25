@@ -1,16 +1,20 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
 import 'package:jenosize/data/models/auth.dart';
 import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/generated/assets.gen.dart';
 
 class AuthRemoteDataSource {
-  const AuthRemoteDataSource();
+  final AssetBundle bundle;
+
+  AuthRemoteDataSource({required this.bundle});
 
   Future<Auth> loginWithEmail({required LoginWithEmailRequest request}) async {
     await Future.delayed(const Duration(milliseconds: 1500));
 
-    return Auth(
-      accessToken: 'mock_access_token_jenosize_123',
-      refreshToken: 'mock_refresh_token_jenosize_123',
-      expiredAt: DateTime.now().add(const Duration(days: 1)),
-    );
+    final String response = await bundle.loadString(Assets.mocks.auth);
+
+    return Auth.fromJson(json.decode(response));
   }
 }

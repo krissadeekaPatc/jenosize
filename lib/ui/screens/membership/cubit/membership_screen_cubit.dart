@@ -21,7 +21,7 @@ class MembershipScreenCubit extends Cubit<MembershipScreenState> {
     emit(state.loading());
 
     const welcomePoints = 100;
-    const transactionTitle = 'Welcome Bonus';
+    const transactionTitle = 'Welcome Member Bonus';
 
     final result = await pointRepository.addTransaction(
       userId: currentUser.id!,
@@ -32,7 +32,7 @@ class MembershipScreenCubit extends Cubit<MembershipScreenState> {
     switch (result) {
       case Success():
         final newPointHistory = PointHistory(
-          id: 'welcome_bonus',
+          id: 'welcome_member_bonus',
           title: transactionTitle,
           points: welcomePoints,
           createdAt: DateTime.now(),

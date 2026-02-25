@@ -1,12 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jenosize/data/data_sources/user_remote_data_source.dart';
 import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/generated/assets.gen.dart';
+import 'package:mocktail/mocktail.dart';
+
+import '../../mocks.dart';
 
 void main() {
   late UserRemoteDataSource dataSource;
+  late MockAssetBundle mockAssetBundle;
 
   setUp(() {
-    dataSource = const UserRemoteDataSource();
+    mockAssetBundle = MockAssetBundle();
+    dataSource = UserRemoteDataSource(bundle: mockAssetBundle);
   });
 
   /*
@@ -16,6 +22,20 @@ void main() {
    */
   group('UserRemoteDataSource', () {
     test('getProfile returns mock user data after delay', () async {
+      const mockJsonString = '''
+        {
+          "id": "usr_mock_001",
+          "totalPoints": 500,
+          "firstName": "Jeno",
+          "lastName": "Tester",
+          "email": "admin@jenosize.com"
+        }
+      ''';
+
+      when(
+        () => mockAssetBundle.loadString(Assets.mocks.user),
+      ).thenAnswer((_) async => mockJsonString);
+
       final result = await dataSource.getProfile();
 
       expect(result, isA<User>());

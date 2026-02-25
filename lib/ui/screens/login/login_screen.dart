@@ -33,8 +33,12 @@ class LoginScreenView extends StatefulWidget {
 
 class _LoginScreenViewState extends State<LoginScreenView> {
   late final LoginScreenCubit _cubit;
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _emailRegex = RegExp(
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+  );
 
   @override
   void initState() {
@@ -63,16 +67,12 @@ class _LoginScreenViewState extends State<LoginScreenView> {
 
   void _onLoginPressed() {
     FocusScope.of(context).unfocus();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.l10n.login_error_empty_fields)),
+    if (_formKey.currentState?.validate() ?? false) {
+      _cubit.login(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
-      return;
     }
-    _cubit.login(email, password);
   }
 
   void _onLanguageToggle() {
@@ -91,13 +91,19 @@ class _LoginScreenViewState extends State<LoginScreenView> {
       builder: (context, state) {
         return LoadingOverlay(
           isLoading: state.isLoading,
-          child: Scaffold(
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  _buildContent(),
-                  _buildLanguageToggle(),
-                ],
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Scaffold(
+              body: SafeArea(
+                child: Form(
+                  key: _formKey,
+                  child: Stack(
+                    children: [
+                      _buildContent(),
+                      _buildLanguageToggle(),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -154,24 +160,44 @@ class _LoginScreenViewState extends State<LoginScreenView> {
   Widget _buildForm() {
     return Column(
       children: [
-        TextField(
+        TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
+          textInputAction: TextInputAction.next,
+          autovalidateMode: .onUserInteraction,
           decoration: InputDecoration(
             labelText: context.l10n.login_label_email,
             prefixIcon: const Icon(Icons.email_outlined),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return context.l10n.login_error_empty_fields;
+            }
+            if (!_emailRegex.hasMatch(value)) {
+              return context.l10n.login_error_invalid_email;
+            }
+            return null;
+          },
         ),
         const SizedBox(height: 20),
-        TextField(
+        TextFormField(
           controller: _passwordController,
           obscureText: true,
+          textInputAction: TextInputAction.done,
+          autovalidateMode: .onUserInteraction,
+          onFieldSubmitted: (_) => _onLoginPressed(),
           decoration: InputDecoration(
             labelText: context.l10n.login_label_password,
             prefixIcon: const Icon(Icons.lock_outline),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return context.l10n.login_error_empty_fields;
+            }
+            return null;
+          },
         ),
       ],
     );

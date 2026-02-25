@@ -31,7 +31,6 @@ void main() {
     when(() => mockSessionCubit.state).thenReturn(
       const SessionState(user: testUser),
     );
-    when(() => mockSessionCubit.stream).thenAnswer((_) => const Stream.empty());
 
     cubit = HomeScreenCubit(
       campaignRepository: mockCampaignRepository,
@@ -110,7 +109,7 @@ void main() {
       );
 
       blocTest<HomeScreenCubit, HomeScreenState>(
-        'emits [loading, ready] and updates session when join is successful',
+        'emits [loading, joinCampaignSuccess] and updates session when join is successful',
         build: () {
           when(() => mockCampaignRepository.joinCampaign(any())).thenAnswer(
             (_) async => Success(Unit()),
@@ -125,7 +124,7 @@ void main() {
         act: (cubit) => cubit.joinCampaign(testCampaign),
         expect: () => [
           const HomeScreenState(status: HomeScreenStatus.loading),
-          const HomeScreenState(status: HomeScreenStatus.ready),
+          const HomeScreenState(status: HomeScreenStatus.joinCampaignSuccess),
         ],
         verify: (_) {
           verify(
@@ -163,90 +162,6 @@ void main() {
           ),
         ],
       );
-    });
-    group('HomeScreenCubit', () {
-      test('initial state should be correct', () {
-        expect(cubit.state, const HomeScreenState());
-      });
-
-      group('loadCampaigns', () {
-        blocTest<HomeScreenCubit, HomeScreenState>(
-          'emits [loading, ready] when getCampaigns is successful',
-          build: () {
-            when(() => mockCampaignRepository.getCampaigns()).thenAnswer(
-              (_) async => const Success(campaignsList),
-            );
-            return cubit;
-          },
-          act: (cubit) => cubit.loadCampaigns(),
-          expect: () => [
-            const HomeScreenState(status: HomeScreenStatus.loading),
-            const HomeScreenState(
-              status: HomeScreenStatus.ready,
-              campaigns: campaignsList,
-            ),
-          ],
-        );
-
-        blocTest<HomeScreenCubit, HomeScreenState>(
-          'emits [loading, failure] when getCampaigns fails',
-          build: () {
-            when(() => mockCampaignRepository.getCampaigns()).thenAnswer(
-              (_) async => const Failure(AppError(message: 'Error')),
-            );
-            return cubit;
-          },
-          act: (cubit) => cubit.loadCampaigns(),
-          expect: () => [
-            const HomeScreenState(status: HomeScreenStatus.loading),
-            isA<HomeScreenState>().having(
-              (s) => s.status,
-              'status',
-              HomeScreenStatus.failure,
-            ),
-          ],
-        );
-      });
-
-      group('joinCampaign', () {
-        blocTest<HomeScreenCubit, HomeScreenState>(
-          'emits [loading, ready] and updates session when join is successful',
-          build: () {
-            when(() => mockCampaignRepository.joinCampaign(any())).thenAnswer(
-              (_) async => Success(Unit()),
-            );
-            when(
-              () => mockSessionCubit.addJoinedCampaign(any()),
-            ).thenReturn(null);
-            when(
-              () => mockSessionCubit.addPointHistory(any()),
-            ).thenReturn(null);
-            when(() => mockSessionCubit.setUser(any())).thenReturn(null);
-            return cubit;
-          },
-          act: (cubit) => cubit.joinCampaign(testCampaign),
-          expect: () => [
-            const HomeScreenState(status: HomeScreenStatus.loading),
-            const HomeScreenState(status: HomeScreenStatus.ready),
-          ],
-          verify: (_) {
-            verify(
-              () => mockCampaignRepository.joinCampaign(testCampaign.id!),
-            ).called(1);
-            verify(
-              () => mockSessionCubit.setUser(
-                any(
-                  that: isA<User>().having(
-                    (u) => u.totalPoints,
-                    'totalPoints',
-                    150,
-                  ),
-                ),
-              ),
-            ).called(1);
-          },
-        );
-      });
     });
   });
 }

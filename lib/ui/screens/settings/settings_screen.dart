@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jenosize/app/router/app_routes.dart';
 import 'package:jenosize/common/app_language.dart';
+import 'package:jenosize/data/models/user.dart';
 import 'package:jenosize/ui/cubits/app_language_cubit.dart';
+import 'package:jenosize/ui/cubits/session/session_cubit.dart';
+import 'package:jenosize/ui/cubits/session/session_state.dart';
 import 'package:jenosize/ui/cubits/theme_mode_cubit.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
 import 'package:jenosize/ui/screens/settings/cubit/settings_screen_cubit.dart';
@@ -78,18 +81,63 @@ class _SettingsScreenViewState extends State<SettingsScreenView> {
         controller: _scrollController,
         padding: const EdgeInsets.all(20),
         child: Column(
+          spacing: 32,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            _buildUserProfileSection(),
             _buildAppearanceSection(),
-            const SizedBox(height: 32),
             _buildLanguageSection(),
-            const SizedBox(height: 32),
             _buildAccountSection(),
-            const SizedBox(height: 40),
             _buildFooterInfo(),
+            const SizedBox(height: 80),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildUserProfileSection() {
+    return BlocSelector<SessionCubit, SessionState, User?>(
+      selector: (state) => state.user,
+      builder: (context, user) {
+        if (user == null) return const SizedBox.shrink();
+
+        return Center(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: context.colorScheme.primary.withValues(alpha: 0.2),
+                    width: 2,
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: context.colorScheme.primaryContainer,
+                  child: Icon(
+                    Icons.account_circle_rounded,
+                    size: 80,
+                    color: context.colorScheme.primary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '${user.firstName} ${user.lastName}',
+                style: AppTextStyle.w700(22).colorOnSurface(context),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                user.email ?? '-',
+                style: AppTextStyle.w400(14).colorOnSurfaceVariant(context),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

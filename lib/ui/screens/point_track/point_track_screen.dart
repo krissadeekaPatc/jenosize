@@ -50,6 +50,7 @@ class _PointTrackScreenViewState extends State<PointTrackScreenView> {
           children: [
             _buildTotalPointsHeader(),
             Expanded(child: _buildBodyList()),
+            const SizedBox(height: 100),
           ],
         ),
       ),

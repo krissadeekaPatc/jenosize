@@ -67,6 +67,6 @@ class HomeScreenCubit extends Cubit<HomeScreenState> {
     sessionCubit.addPointHistory(pointHistory);
     sessionCubit.setUser(updatedUser);
 
-    emit(state.ready());
+    emit(state.joinCampaignSuccess());
   }
 }

@@ -60,3 +60,5 @@ class MockAppLanguageCubit extends MockCubit<AppLanguage>
 
 class MockThemeModeCubit extends MockCubit<ThemeMode>
     implements ThemeModeCubit {}
+
+class MockAssetBundle extends Mock implements AssetBundle {}

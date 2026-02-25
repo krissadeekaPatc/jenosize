@@ -143,4 +143,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get home_alert_join_message =>
       'Are you sure you want to join this campaign?';
+
+  @override
+  String get login_error_invalid_email =>
+      'Invalid email format. Please check again.';
+
+  @override
+  String get campaign_join_success =>
+      'Joined successfully! Enjoy your rewards.';
 }

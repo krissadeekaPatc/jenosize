@@ -349,6 +349,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to join this campaign?'**
   String get home_alert_join_message;
+
+  /// No description provided for @login_error_invalid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format. Please check again.'**
+  String get login_error_invalid_email;
+
+  /// No description provided for @campaign_join_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined successfully! Enjoy your rewards.'**
+  String get campaign_join_success;
 }
 
 class _AppLocalizationsDelegate

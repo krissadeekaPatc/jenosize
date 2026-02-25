@@ -41,5 +41,7 @@
   "settings_language_en": "อังกฤษ",
   "settings_language_th": "ไทย",
   "home_alert_join_title": "เข้าร่วมแคมเปญ",
-  "home_alert_join_message": "คุณยืนยันที่จะเข้าร่วมแคมเปญนี้ใช่หรือไม่?"
+  "home_alert_join_message": "คุณยืนยันที่จะเข้าร่วมแคมเปญนี้ใช่หรือไม่?",
+  "login_error_invalid_email": "รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
+  "campaign_join_success": "เข้าร่วมแคมเปญสำเร็จแล้ว! เตรียมรับรางวัลได้เลย"
 }

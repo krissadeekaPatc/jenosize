@@ -142,4 +142,12 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get home_alert_join_message =>
       'คุณยืนยันที่จะเข้าร่วมแคมเปญนี้ใช่หรือไม่?';
+
+  @override
+  String get login_error_invalid_email =>
+      'รูปแบบอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง';
+
+  @override
+  String get campaign_join_success =>
+      'เข้าร่วมแคมเปญสำเร็จแล้ว! เตรียมรับรางวัลได้เลย';
 }

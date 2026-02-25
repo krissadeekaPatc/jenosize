@@ -59,7 +59,6 @@ void main() {
         when(
           () => mockTokenVault.hasAccessToken(),
         ).thenAnswer((_) async => true);
-        // จำลองว่ามี User ใน State แล้ว
         when(
           () => mockSessionCubit.state,
         ).thenReturn(SessionState(user: mockUser));
@@ -82,7 +81,6 @@ void main() {
           () => mockUserRepository.getProfile(),
         ).thenAnswer((_) async => Success(mockUser));
 
-        // ดักฟังก์ชัน setUser ไว้เพื่อให้แน่ใจว่าทำงานได้
         when(() => mockSessionCubit.setUser(any())).thenReturn(null);
 
         final result = await useCase.getUserSession();

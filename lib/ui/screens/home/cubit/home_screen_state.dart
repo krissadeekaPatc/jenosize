@@ -1,11 +1,12 @@
+import 'package:equatable/equatable.dart';
 import 'package:jenosize/data/models/campaign.dart';
 import 'package:jenosize/domain/core/app_error.dart';
-import 'package:equatable/equatable.dart';
 
 enum HomeScreenStatus {
   initial,
   loading,
   ready,
+  joinCampaignSuccess,
   failure,
   ;
 
@@ -54,6 +55,12 @@ class HomeScreenState extends Equatable {
     return copyWith(
       status: HomeScreenStatus.ready,
       campaigns: campaigns ?? this.campaigns,
+    );
+  }
+
+  HomeScreenState joinCampaignSuccess() {
+    return copyWith(
+      status: HomeScreenStatus.joinCampaignSuccess,
     );
   }
 

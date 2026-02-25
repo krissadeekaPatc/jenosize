@@ -1,0 +1,44 @@
+[
+  {
+    "id": "txn_001",
+    "userId": "usr_mock_001",
+    "title": "Redeemed: ฿50 Discount Coupon",
+    "points": -500,
+    "createdAt": "2026-02-26T09:32:00Z"
+  },
+  {
+    "id": "txn_002",
+    "userId": "usr_mock_001",
+    "title": "Joined: Summer Coffee Fiesta",
+    "points": 50,
+    "createdAt": "2026-02-26T06:32:00Z"
+  },
+  {
+    "id": "txn_003",
+    "userId": "usr_mock_001",
+    "title": "Birthday Month Surprise",
+    "points": 300,
+    "createdAt": "2026-02-24T10:32:00Z"
+  },
+  {
+    "id": "txn_004",
+    "userId": "usr_mock_001",
+    "title": "Refer a Friend Bonus",
+    "points": 100,
+    "createdAt": "2026-02-21T10:32:00Z"
+  },
+  {
+    "id": "txn_005",
+    "userId": "usr_mock_001",
+    "title": "Redeemed: Free Iced Latte",
+    "points": -150,
+    "createdAt": "2026-02-16T10:32:00Z"
+  },
+  {
+    "id": "txn_006",
+    "userId": "usr_mock_001",
+    "title": "Welcome Bonus",
+    "points": 700,
+    "createdAt": "2026-02-11T10:32:00Z"
+  }
+]

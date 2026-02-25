@@ -41,5 +41,7 @@
   "settings_language_en": "English",
   "settings_language_th": "Thai",
   "home_alert_join_title": "Join Campaign",
-  "home_alert_join_message": "Are you sure you want to join this campaign?"
+  "home_alert_join_message": "Are you sure you want to join this campaign?",
+  "login_error_invalid_email": "Invalid email format. Please check again.",
+  "campaign_join_success": "Joined successfully! Enjoy your rewards."
 }

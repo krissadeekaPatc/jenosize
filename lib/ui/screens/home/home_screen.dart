@@ -4,6 +4,7 @@ import 'package:jenosize/data/models/campaign.dart';
 import 'package:jenosize/ui/cubits/session/session_cubit.dart';
 import 'package:jenosize/ui/cubits/session/session_state.dart';
 import 'package:jenosize/ui/extensions/build_context_extension.dart';
+import 'package:jenosize/ui/global_widgets/app_flush_bar.dart';
 import 'package:jenosize/ui/global_widgets/campaign_card.dart';
 import 'package:jenosize/ui/screens/home/cubit/home_screen_cubit.dart';
 import 'package:jenosize/ui/screens/home/cubit/home_screen_state.dart';
@@ -32,6 +33,11 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       case HomeScreenStatus.loading:
       case HomeScreenStatus.ready:
         break;
+      case HomeScreenStatus.joinCampaignSuccess:
+        AppFlushBar.success(
+          context,
+          message: context.l10n.campaign_join_success,
+        );
       case HomeScreenStatus.failure:
         AppAlert.error(context, error: state.error);
     }

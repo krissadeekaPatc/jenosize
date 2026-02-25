@@ -51,6 +51,7 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/mocks/
 
 flutter_gen:
   output: lib/generated/
