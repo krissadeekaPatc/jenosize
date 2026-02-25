@@ -1,57 +1,33 @@
-// import 'package:jenosize/data/data_sources/auth_remote_data_source.dart';
-// import 'package:jenosize/data/models/auth.dart';
-// import 'package:jenosize/data/models/requests/login_with_email_request.dart';
-// import 'package:dio/dio.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mocktail/mocktail.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/data/data_sources/auth_remote_data_source.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
 
-// import '../../mocks.dart';
+void main() {
+  late AuthRemoteDataSource dataSource;
 
-// void main() {
-//   late AuthRemoteDataSource dataSource;
+  setUp(() {
+    dataSource = const AuthRemoteDataSource();
+  });
 
-//   setUp(() {
-//     dataSource = AuthRemoteDataSource();
-//   });
+  /*
+   * AuthRemoteDataSource Test Cases:
+   * 1. loginWithEmail Success: ตรวจสอบว่าเมื่อเรียก login ด้วย request ที่ถูกต้อง 
+   * จะต้องคืนค่า Auth object ที่มี access token และ refresh token ตามที่กำหนดไว้
+   */
+  group('AuthRemoteDataSource', () {
+    test('loginWithEmail returns valid Auth object after delay', () async {
+      const request = LoginWithEmailRequest(
+        email: 'test@jenosize.com',
+        password: 'password123',
+      );
 
-//   group('AuthRemoteDataSource.loginWithEmail', () {
-//     const testPath = '/api/app/auth/credentials/signin';
+      final result = await dataSource.loginWithEmail(request: request);
 
-//     final testResponse = Response(
-//       statusCode: 200,
-//       requestOptions: RequestOptions(),
-//       data: {
-//         'data': {
-//           'accessToken': 'token123',
-//           'refreshToken': 'secretXYZ',
-//           'expiredAt': '2025-01-01T00:00:00.000Z',
-//         },
-//       },
-//     );
-
-//     final request = const LoginWithEmailRequest(
-//       email: 'test@example.com',
-//       password: 'password123',
-//     );
-
-//     test('should return Auth when API call is successful', () async {
-//       when(
-//         () => mockApiClient.post(testPath, data: request.toJson()),
-//       ).thenAnswer((_) async => testResponse);
-
-//       final result = await dataSource.loginWithEmail(request: request);
-
-//       expect(result, isA<Auth>());
-//       expect(result.accessToken, equals('token123'));
-//       expect(result.refreshToken, equals('secretXYZ'));
-//       expect(
-//         result.expiredAt,
-//         equals(DateTime.parse('2025-01-01T00:00:00.000Z')),
-//       );
-
-//       verify(
-//         () => mockApiClient.post(testPath, data: request.toJson()),
-//       ).called(1);
-//     });
-//   });
-// }
+      expect(result, isA<Auth>());
+      expect(result.accessToken, isNotEmpty);
+      expect(result.refreshToken, isNotEmpty);
+      expect(result.expiredAt?.isAfter(DateTime.now()), isTrue);
+    });
+  });
+}

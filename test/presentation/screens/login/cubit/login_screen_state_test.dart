@@ -1,72 +1,117 @@
-// import 'package:jenosize/domain/core/app_error.dart';
-// import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
 
-// void main() {
-//   group('LoginScreenState', () {
-//     test('initial state defaults to initial status with no error', () {
-//       const state = LoginScreenState();
-//       expect(state.status, equals(LoginScreenStatus.initial));
-//       expect(state.error, isNull);
-//     });
+void main() {
+  const testError = AppError();
 
-//     test('loading() returns a state with loading status', () {
-//       const state = LoginScreenState();
-//       final loadingState = state.loading();
-//       expect(loadingState.status, equals(LoginScreenStatus.loading));
-//       expect(loadingState.error, isNull);
-//     });
+  /*
+   * LoginScreenState Test Cases:
+   * 1. Value Equality: ทดสอบว่า Equatable ทำงานถูกต้อง (State ที่มีค่าเท่ากัน ถือว่าเป็น Object เดียวกัน)
+   * 2. Props: ทดสอบว่า getter `props` ส่งคืนค่า `status` และ `error` ออกมาถูกต้องสำหรับให้ Equatable ใช้เปรียบเทียบ
+   * 3. isLoading Getter: ทดสอบว่า get isLoading จะคืนค่า true เฉพาะตอนที่ status เป็น loading เท่านั้น
+   * 4. copyWith: ทดสอบการโคลน State และเปลี่ยนเฉพาะค่าที่ส่งเข้าไป (เช่น เปลี่ยน status หรือเปลี่ยน error)
+   * 5. Helper Methods: 
+   * - loading(): ทดสอบว่าเปลี่ยนสถานะเป็น loading ได้ถูกต้อง
+   * - success(): ทดสอบว่าเปลี่ยนสถานะเป็น success ได้ถูกต้อง
+   * - failure(): ทดสอบว่าเปลี่ยนสถานะเป็น failure พร้อมแนบ AppError เข้าไปได้ถูกต้อง
+   */
+  group('LoginScreenState', () {
+    test('supports value equality', () {
+      expect(
+        const LoginScreenState(),
+        equals(const LoginScreenState()),
+      );
 
-//     test('ready() returns a state with ready status', () {
-//       const state = LoginScreenState();
-//       final readyState = state.ready();
-//       expect(readyState.status, equals(LoginScreenStatus.ready));
-//       expect(readyState.error, isNull);
-//     });
+      expect(
+        const LoginScreenState(status: LoginScreenStatus.loading),
+        isNot(
+          equals(const LoginScreenState(status: LoginScreenStatus.initial)),
+        ),
+      );
+    });
 
-//     test('success() returns a state with success status', () {
-//       const state = LoginScreenState();
-//       final successState = state.success();
-//       expect(successState.status, equals(LoginScreenStatus.success));
-//       expect(successState.error, isNull);
-//     });
+    test('props are correct', () {
+      expect(
+        const LoginScreenState(
+          status: LoginScreenStatus.initial,
+          error: null,
+        ).props,
+        equals([LoginScreenStatus.initial, null]),
+      );
 
-//     test(
-//       'failure() returns a state with failure status and sets the error',
-//       () {
-//         const state = LoginScreenState();
-//         const error = AppError(message: 'Test error');
-//         final failureState = state.failure(error);
-//         expect(failureState.status, equals(LoginScreenStatus.failure));
-//         expect(failureState.error, equals(error));
-//       },
-//     );
+      expect(
+        const LoginScreenState(
+          status: LoginScreenStatus.failure,
+          error: testError,
+        ).props,
+        equals([LoginScreenStatus.failure, testError]),
+      );
+    });
 
-//     test('copyWith updates state properties correctly', () {
-//       const state = LoginScreenState();
-//       const error = AppError(message: 'Updated error');
-//       final updatedState = state.copyWith(
-//         status: LoginScreenStatus.success,
-//         error: error,
-//       );
-//       expect(updatedState.status, equals(LoginScreenStatus.success));
-//       expect(updatedState.error, equals(error));
-//     });
+    group('isLoading', () {
+      test('returns true when status is loading', () {
+        expect(
+          const LoginScreenState(status: LoginScreenStatus.loading).isLoading,
+          isTrue,
+        );
+      });
 
-//     test('copyWith returns the same state when no arguments provided', () {
-//       const state = LoginScreenState(
-//         status: LoginScreenStatus.initial,
-//         error: null,
-//       );
-//       final copiedState = state.copyWith();
-//       expect(copiedState, equals(state));
-//     });
+      test('returns false when status is not loading', () {
+        expect(
+          const LoginScreenState(status: LoginScreenStatus.initial).isLoading,
+          isFalse,
+        );
+        expect(
+          const LoginScreenState(status: LoginScreenStatus.success).isLoading,
+          isFalse,
+        );
+        expect(
+          const LoginScreenState(status: LoginScreenStatus.failure).isLoading,
+          isFalse,
+        );
+      });
+    });
 
-//     test('isLoading getter returns true only for loading status', () {
-//       expect(LoginScreenStatus.loading.isLoading, isTrue);
-//       expect(LoginScreenStatus.initial.isLoading, isFalse);
-//       expect(LoginScreenStatus.ready.isLoading, isFalse);
-//       expect(LoginScreenStatus.success.isLoading, isFalse);
-//       expect(LoginScreenStatus.failure.isLoading, isFalse);
-//     });
-//   });
-// }
+    group('copyWith', () {
+      test('returns same object with updated status', () {
+        final state = const LoginScreenState();
+        final newState = state.copyWith(status: LoginScreenStatus.success);
+
+        expect(newState.status, equals(LoginScreenStatus.success));
+        expect(newState.error, isNull);
+      });
+
+      test('returns object with updated error', () {
+        final state = const LoginScreenState(status: LoginScreenStatus.failure);
+        final newState = state.copyWith(error: testError);
+
+        expect(newState.status, equals(LoginScreenStatus.failure));
+        expect(newState.error, equals(testError));
+      });
+    });
+
+    group('Helper Methods', () {
+      test('loading() changes status to loading', () {
+        final state = const LoginScreenState().loading();
+
+        expect(state.status, equals(LoginScreenStatus.loading));
+        expect(state.error, isNull);
+      });
+
+      test('success() changes status to success', () {
+        final state = const LoginScreenState().success();
+
+        expect(state.status, equals(LoginScreenStatus.success));
+        expect(state.error, isNull);
+      });
+
+      test('failure() changes status to failure and assigns error', () {
+        final state = const LoginScreenState().failure(testError);
+
+        expect(state.status, equals(LoginScreenStatus.failure));
+        expect(state.error, equals(testError));
+      });
+    });
+  });
+}

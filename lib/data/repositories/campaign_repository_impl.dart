@@ -20,10 +20,10 @@ class CampaignRepositoryImpl implements CampaignRepository {
   }
 
   @override
-  Future<Result<void>> joinCampaign(String campaignId) async {
+  Future<Result<Unit>> joinCampaign(String campaignId) async {
     try {
       await _dataSource.joinCampaign(campaignId);
-      return const Success(null);
+      return Success(Unit());
     } catch (e) {
       return Failure(AppError.from(e));
     }

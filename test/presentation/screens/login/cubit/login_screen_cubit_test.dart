@@ -1,90 +1,96 @@
-// import 'package:jenosize/data/models/requests/login_with_email_request.dart';
-// import 'package:jenosize/domain/core/app_error.dart';
-// import 'package:jenosize/domain/core/result.dart';
-// import 'package:jenosize/ui/screens/login/cubit/login_screen_cubit.dart';
-// import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
-// import 'package:bloc_test/bloc_test.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mocktail/mocktail.dart';
+import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/data/models/auth.dart';
+import 'package:jenosize/data/models/requests/login_with_email_request.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_cubit.dart';
+import 'package:jenosize/ui/screens/login/cubit/login_screen_state.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../../../mocks.dart';
+import '../../../../mocks.dart';
 
-// void main() {
-//   late MockLoginWithEmailUseCase mockLoginWithEmailUseCase;
-//   late LoginScreenCubit cubit;
+class FakeLoginWithEmailRequest extends Fake implements LoginWithEmailRequest {}
 
-//   setUpAll(() {
-//     registerFallbackValue(
-//       const LoginWithEmailRequest(email: '', password: ''),
-//     );
-//   });
+class FakeAuth extends Fake implements Auth {}
 
-//   setUp(() {
-//     mockLoginWithEmailUseCase = MockLoginWithEmailUseCase();
-//     cubit = LoginScreenCubit(loginWithEmailUseCase: mockLoginWithEmailUseCase);
-//   });
+void main() {
+  late MockLoginWithEmailUseCase mockLoginUseCase;
 
-//   tearDown(() async {
-//     await cubit.close();
-//   });
+  const testEmail = 'test@email.com';
+  const testPassword = 'password123';
+  final testError = const AppError();
 
-//   group('LoginScreenCubit', () {
-//     test('initial state is LoginScreenState.initial', () {
-//       expect(cubit.state, equals(const LoginScreenState()));
-//     });
+  setUpAll(() {
+    registerFallbackValue(FakeLoginWithEmailRequest());
+  });
 
-//     blocTest<LoginScreenCubit, LoginScreenState>(
-//       'emits [loading, success] when login is successful',
-//       build: () {
-//         when(
-//           () => mockLoginWithEmailUseCase.call(request: any(named: 'request')),
-//         ).thenAnswer((_) async => Success(Unit()));
+  setUp(() {
+    mockLoginUseCase = MockLoginWithEmailUseCase();
+  });
 
-//         return cubit;
-//       },
-//       act: (cubit) => cubit.login(),
-//       verify: (_) {
-//         verify(
-//           () => mockLoginWithEmailUseCase.call(request: any(named: 'request')),
-//         ).called(1);
-//       },
-//       expect: () => [
-//         const LoginScreenState(
-//           status: LoginScreenStatus.loading,
-//           error: null,
-//         ),
-//         const LoginScreenState(
-//           status: LoginScreenStatus.success,
-//           error: null,
-//         ),
-//       ],
-//     );
+  /*
+   * LoginScreenCubit Test Cases:
+   * 1. Success Flow: ตรวจสอบการเปลี่ยน State ไปที่ loading() และ success() เมื่อ Login API สำเร็จ
+   * 2. Failure Flow: ตรวจสอบการเปลี่ยน State ไปที่ loading() และ failure() พร้อมแนบ Error เมื่อ Login API ล้มเหลว
+   * 3. Guard Condition (Loading Check): ตรวจสอบการดักจับไม่ให้เรียก UseCase ซ้ำ หาก State ปัจจุบันกำลัง loading() อยู่
+   */
+  group('LoginScreenCubit', () {
+    blocTest<LoginScreenCubit, LoginScreenState>(
+      'emits loading then success when login is successful',
+      setUp: () {
+        when(
+          () => mockLoginUseCase.call(request: any(named: 'request')),
+        ).thenAnswer((_) async => Success(FakeAuth()));
+      },
+      build: () => LoginScreenCubit(mockLoginUseCase),
+      act: (cubit) => cubit.login(testEmail, testPassword),
+      expect: () => [
+        const LoginScreenState().loading(),
+        const LoginScreenState().loading().success(),
+      ],
+      verify: (_) {
+        verify(
+          () => mockLoginUseCase.call(
+            request: any(named: 'request', that: isA<LoginWithEmailRequest>()),
+          ),
+        ).called(1);
+      },
+    );
 
-//     final loginError = const AppError(message: 'Login failed');
-//     blocTest<LoginScreenCubit, LoginScreenState>(
-//       'emits [loading, failure] when login fails',
-//       build: () {
-//         when(
-//           () => mockLoginWithEmailUseCase.call(request: any(named: 'request')),
-//         ).thenAnswer((_) async => Failure(loginError));
-//         return cubit;
-//       },
-//       act: (cubit) => cubit.login(),
-//       verify: (_) {
-//         verify(
-//           () => mockLoginWithEmailUseCase.call(request: any(named: 'request')),
-//         ).called(1);
-//       },
-//       expect: () => [
-//         const LoginScreenState(
-//           status: LoginScreenStatus.loading,
-//           error: null,
-//         ),
-//         LoginScreenState(
-//           status: LoginScreenStatus.failure,
-//           error: loginError,
-//         ),
-//       ],
-//     );
-//   });
-// }
+    blocTest<LoginScreenCubit, LoginScreenState>(
+      'emits loading then failure when login fails',
+      setUp: () {
+        when(
+          () => mockLoginUseCase.call(request: any(named: 'request')),
+        ).thenAnswer((_) async => Failure(testError));
+      },
+      build: () => LoginScreenCubit(mockLoginUseCase),
+      act: (cubit) => cubit.login(testEmail, testPassword),
+      expect: () => [
+        const LoginScreenState().loading(),
+        const LoginScreenState().loading().failure(testError),
+      ],
+      verify: (_) {
+        verify(
+          () => mockLoginUseCase.call(
+            request: any(named: 'request', that: isA<LoginWithEmailRequest>()),
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<LoginScreenCubit, LoginScreenState>(
+      'does nothing when state is already loading (Guard condition)',
+      build: () => LoginScreenCubit(mockLoginUseCase),
+      seed: () => const LoginScreenState().loading(),
+      act: (cubit) => cubit.login(testEmail, testPassword),
+      expect: () => [],
+      verify: (_) {
+        verifyNever(
+          () => mockLoginUseCase.call(request: any(named: 'request')),
+        );
+      },
+    );
+  });
+}

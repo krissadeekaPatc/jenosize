@@ -3,5 +3,5 @@ import 'package:jenosize/domain/core/result.dart';
 
 abstract class CampaignRepository {
   Future<Result<List<Campaign>>> getCampaigns();
-  Future<Result<void>> joinCampaign(String campaignId);
+  Future<Result<Unit>> joinCampaign(String campaignId);
 }

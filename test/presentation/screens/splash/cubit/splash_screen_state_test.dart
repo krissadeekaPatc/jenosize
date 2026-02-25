@@ -2,49 +2,76 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:jenosize/ui/screens/splash/cubit/splash_screen_state.dart';
 
 void main() {
+  /*
+   * SplashScreenState Test Cases:
+   * 1. Value Equality: ทดสอบว่า Equatable ทำงานถูกต้อง (Object สองตัวที่มีค่าเท่ากัน ถือว่าเท่ากัน)
+   * 2. Props: ทดสอบว่า getter `props` ดึงค่า status ออกมาถูกต้อง
+   * 3. copyWith: ทดสอบการสร้าง State ใหม่โดยเปลี่ยนแค่ status และการดึงค่าเดิมมาใช้ถ้าไม่ส่งค่าเข้ามา
+   * 4. Helper Methods: 
+   * - authenticated(): ทดสอบว่าเปลี่ยน status เป็น authenticated ได้ถูกต้อง
+   * - unauthenticated(): ทดสอบว่าเปลี่ยน status เป็น unauthenticated ได้ถูกต้อง
+   */
   group('SplashScreenState', () {
-    test(
-      'initial state defaults to initial with no appStoreLink and storeVersion',
-      () {
-        const state = SplashScreenState();
-        expect(state.status, SplashScreenStatus.initial);
-        expect(state.appStoreLink, isNull);
-        expect(state.storeVersion, isNull);
-      },
-    );
-
-    test('copyWith returns a new state with updated fields', () {
-      const state = SplashScreenState();
-      final updatedState = state.copyWith(
-        status: SplashScreenStatus.authenticated,
-        appStoreLink: 'http://example.com',
-        storeVersion: '1.2.3',
+    test('supports value equality', () {
+      expect(
+        const SplashScreenState(),
+        equals(const SplashScreenState()),
       );
-      expect(updatedState.status, SplashScreenStatus.authenticated);
-      expect(updatedState.appStoreLink, equals('http://example.com'));
-      expect(updatedState.storeVersion, equals('1.2.3'));
-    });
 
-    test('authenticated returns state with authenticated status', () {
-      const state = SplashScreenState();
-      final updated = state.authenticated();
-      expect(updated.status, SplashScreenStatus.authenticated);
-    });
-
-    test('unauthenticated returns state with unauthenticated status', () {
-      const state = SplashScreenState();
-      final updated = state.unauthenticated();
-      expect(updated.status, SplashScreenStatus.unauthenticated);
-    });
-
-    test('copyWith returns the same state when no arguments are provided', () {
-      const state = SplashScreenState(
-        status: SplashScreenStatus.initial,
-        appStoreLink: 'link',
-        storeVersion: 'version',
+      expect(
+        const SplashScreenState(status: SplashScreenStatus.authenticated),
+        isNot(
+          equals(const SplashScreenState(status: SplashScreenStatus.initial)),
+        ),
       );
-      final copy = state.copyWith();
-      expect(copy, equals(state));
+    });
+
+    test('props are correct', () {
+      expect(
+        const SplashScreenState(status: SplashScreenStatus.initial).props,
+        equals([SplashScreenStatus.initial]),
+      );
+
+      expect(
+        const SplashScreenState(
+          status: SplashScreenStatus.unauthenticated,
+        ).props,
+        equals([SplashScreenStatus.unauthenticated]),
+      );
+    });
+
+    group('copyWith', () {
+      test('returns same object with updated status', () {
+        final state = const SplashScreenState();
+        final newState = state.copyWith(
+          status: SplashScreenStatus.authenticated,
+        );
+
+        expect(newState.status, equals(SplashScreenStatus.authenticated));
+      });
+
+      test('returns same object when no arguments are provided', () {
+        final state = const SplashScreenState(
+          status: SplashScreenStatus.authenticated,
+        );
+        final newState = state.copyWith();
+
+        expect(newState.status, equals(SplashScreenStatus.authenticated));
+      });
+    });
+
+    group('Helper Methods', () {
+      test('authenticated() changes status to authenticated', () {
+        final state = const SplashScreenState().authenticated();
+
+        expect(state.status, equals(SplashScreenStatus.authenticated));
+      });
+
+      test('unauthenticated() changes status to unauthenticated', () {
+        final state = const SplashScreenState().unauthenticated();
+
+        expect(state.status, equals(SplashScreenStatus.unauthenticated));
+      });
     });
   });
 }

@@ -9,70 +9,63 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../../mocks.dart';
 
+class FakeUser extends Fake implements User {}
+
 void main() {
-  late MockSplashScreenUseCase mockUseCase;
   late MockSessionCubit mockSessionCubit;
-  late SplashScreenCubit cubit;
+  late MockSplashScreenUseCase mockUseCase;
+
+  const testError = AppError();
 
   setUp(() {
-    mockUseCase = MockSplashScreenUseCase();
     mockSessionCubit = MockSessionCubit();
-    cubit = SplashScreenCubit(
-      sessionCubit: mockSessionCubit,
-      useCase: mockUseCase,
-    );
+    mockUseCase = MockSplashScreenUseCase();
   });
 
-  tearDown(() async {
-    await cubit.close();
-  });
-
+  /*
+   * SplashScreenCubit Test Cases:
+   * 1. Authenticated Flow: ตรวจสอบเมื่อดึงข้อมูล Session สำเร็จ (Success) State จะต้องเปลี่ยนเป็น authenticated
+   * 2. Unauthenticated Flow: ตรวจสอบเมื่อดึงข้อมูล Session ล้มเหลวหรือไม่พบข้อมูล (Failure) State จะต้องเปลี่ยนเป็น unauthenticated
+   */
   group('SplashScreenCubit', () {
-    test('initial state is SplashScreenState.initial', () {
-      expect(cubit.state, equals(const SplashScreenState()));
-    });
     blocTest<SplashScreenCubit, SplashScreenState>(
-      'emits authenticated state when no update available and session is authenticated',
-      build: () {
-        when(() => mockUseCase.getUserSession()).thenAnswer((_) async {
-          return const Success(User());
-        });
-
-        return cubit;
+      'emits authenticated when useCase returns Success',
+      setUp: () {
+        when(() => mockUseCase.getUserSession()).thenAnswer(
+          (_) async => Success(FakeUser()),
+        );
       },
+      build: () => SplashScreenCubit(
+        sessionCubit: mockSessionCubit,
+        useCase: mockUseCase,
+      ),
       act: (cubit) => cubit.initialize(),
+      expect: () => [
+        const SplashScreenState().authenticated(),
+      ],
       verify: (_) {
         verify(() => mockUseCase.getUserSession()).called(1);
       },
-      expect: () => [
-        const SplashScreenState(
-          status: SplashScreenStatus.authenticated,
-          appStoreLink: null,
-          storeVersion: null,
-        ),
-      ],
     );
 
     blocTest<SplashScreenCubit, SplashScreenState>(
-      'emits unauthenticated state when no update available and session is not authenticated',
-      build: () {
-        when(() => mockUseCase.getUserSession()).thenAnswer((_) async {
-          return const Failure(AppError(message: 'error'));
-        });
-
-        return cubit;
+      'emits unauthenticated when useCase returns Failure',
+      setUp: () {
+        when(() => mockUseCase.getUserSession()).thenAnswer(
+          (_) async => const Failure(testError),
+        );
       },
+      build: () => SplashScreenCubit(
+        sessionCubit: mockSessionCubit,
+        useCase: mockUseCase,
+      ),
       act: (cubit) => cubit.initialize(),
+      expect: () => [
+        const SplashScreenState().unauthenticated(),
+      ],
       verify: (_) {
         verify(() => mockUseCase.getUserSession()).called(1);
       },
-      expect: () => [
-        const SplashScreenState(
-          status: SplashScreenStatus.unauthenticated,
-          appStoreLink: null,
-          storeVersion: null,
-        ),
-      ],
     );
   });
 }

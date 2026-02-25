@@ -1,90 +1,111 @@
-// import 'package:jenosize/data/enums/user_gender.dart';
-// import 'package:jenosize/data/models/user.dart';
-// import 'package:jenosize/domain/core/app_error.dart';
-// import 'package:jenosize/domain/core/result.dart';
-// import 'package:jenosize/domain/use_cases/splash_use_case.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:mocktail/mocktail.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jenosize/data/models/user.dart';
+import 'package:jenosize/domain/core/app_error.dart';
+import 'package:jenosize/domain/core/result.dart';
+import 'package:jenosize/domain/use_cases/splash_use_case.dart';
+import 'package:jenosize/ui/cubits/session/session_state.dart';
+import 'package:mocktail/mocktail.dart';
 
-// import '../../mocks.dart';
+import '../../mocks.dart';
 
-// void main() {
-//   late MockTokenVault mockTokenVault;
-//   late MockStoreVersionRepository mockStoreVersionRepository;
-//   late MockUserRepository mockUserRepository;
-//   late SplashScreenUseCase useCase;
+void main() {
+  late SplashScreenUseCase useCase;
+  late MockTokenVault mockTokenVault;
+  late MockUserRepository mockUserRepository;
+  late MockSessionCubit mockSessionCubit;
 
-//   setUp(() {
-//     mockTokenVault = MockTokenVault();
-//     mockStoreVersionRepository = MockStoreVersionRepository();
-//     mockUserRepository = MockUserRepository();
-//     useCase = SplashScreenUseCase(
-//       tokenVault: mockTokenVault,
-//       storeVersionRepository: mockStoreVersionRepository,
-//       userRepository: mockUserRepository,
-//     );
-//   });
-//   group('SplashScreenUseCase', () {
-//     test(
-//       'getUserSession returns error when tokenVault.hasAccessToken() returns false',
-//       () async {
-//         when(
-//           () => mockTokenVault.hasAccessToken(),
-//         ).thenAnswer((_) async => false);
+  final mockUser = const User(
+    id: 'user_123',
+    firstName: 'Krissadeeka',
+    lastName: 'Patchantakeereesaakun',
+  );
 
-//         final result = await useCase.getUserSession();
+  setUp(() {
+    mockTokenVault = MockTokenVault();
+    mockUserRepository = MockUserRepository();
+    mockSessionCubit = MockSessionCubit();
 
-//         expect(
-//           result,
-//           const Failure<User>(AppError(message: 'Access token not found')),
-//         );
-//         verify(() => mockTokenVault.hasAccessToken()).called(1);
-//       },
-//     );
+    useCase = SplashScreenUseCase(
+      tokenVault: mockTokenVault,
+      userRepository: mockUserRepository,
+      sessionCubit: mockSessionCubit,
+    );
 
-//     test(
-//       'getUserSession returns user when userRepository.me() succeeds',
-//       () async {
-//         final dummyUser = const User(
-//           id: '1',
-//           firstName: 'Test',
-//           lastName: 'User',
-//           email: 'test@example.com',
-//           gender: UserGender.male,
-//         );
-//         when(
-//           () => mockTokenVault.hasAccessToken(),
-//         ).thenAnswer((_) async => true);
-//         when(
-//           () => mockUserRepository.me(),
-//         ).thenAnswer((_) async => Success<User>(dummyUser));
+    when(() => mockSessionCubit.state).thenReturn(const SessionState());
+  });
 
-//         final result = await useCase.getUserSession();
+  /*
+   * SplashScreenUseCase Test Cases:
+   * 1. No Token: ตรวจสอบว่าถ้าไม่มี Access Token ใน Vault จะต้องคืนค่า Failure กลับไปทันที
+   * 2. Cache Hit: ตรวจสอบว่าถ้ามี User ใน SessionCubit อยู่แล้ว จะต้องคืนค่า User นั้นโดยไม่เรียก API
+   * 3. Fetch Success: ตรวจสอบว่าถ้าไม่มี User ใน Cache จะต้องดึงผ่าน UserRepository และบันทึกลง SessionCubit เมื่อสำเร็จ
+   * 4. Fetch Failure: ตรวจสอบว่าถ้าเรียก API ล้มเหลว จะต้องคืนค่า Failure กลับไป
+   */
+  group('SplashScreenUseCase', () {
+    test('returns Failure when access token is not found', () async {
+      when(
+        () => mockTokenVault.hasAccessToken(),
+      ).thenAnswer((_) async => false);
 
-//         expect(result, Success<User>(dummyUser));
-//         verify(() => mockUserRepository.me()).called(1);
-//       },
-//     );
+      final result = await useCase.getUserSession();
 
-//     test(
-//       'getUserSession returns error when userRepository.me() throws error with status 401',
-//       () async {
-//         final appError = const AppError(
-//           message: 'Unauthorized',
-//           statusCode: 401,
-//         );
-//         when(
-//           () => mockTokenVault.hasAccessToken(),
-//         ).thenAnswer((_) async => true);
-//         when(
-//           () => mockUserRepository.me(),
-//         ).thenAnswer((_) async => Failure(appError));
+      expect(result, isA<Failure>());
+      verifyNever(() => mockUserRepository.getProfile());
+    });
 
-//         final result = await useCase.getUserSession();
+    test(
+      'returns Success with user from SessionCubit when cache exists',
+      () async {
+        when(
+          () => mockTokenVault.hasAccessToken(),
+        ).thenAnswer((_) async => true);
+        // จำลองว่ามี User ใน State แล้ว
+        when(
+          () => mockSessionCubit.state,
+        ).thenReturn(SessionState(user: mockUser));
 
-//         expect(result, Failure(appError));
-//         verify(() => mockUserRepository.me()).called(1);
-//       },
-//     );
-//   });
-// }
+        final result = await useCase.getUserSession();
+
+        expect(result, Success(mockUser));
+        verifyNever(() => mockUserRepository.getProfile());
+      },
+    );
+
+    test(
+      'fetches from repository and updates session when cache is empty',
+      () async {
+        when(
+          () => mockTokenVault.hasAccessToken(),
+        ).thenAnswer((_) async => true);
+        when(() => mockSessionCubit.state).thenReturn(const SessionState());
+        when(
+          () => mockUserRepository.getProfile(),
+        ).thenAnswer((_) async => Success(mockUser));
+
+        // ดักฟังก์ชัน setUser ไว้เพื่อให้แน่ใจว่าทำงานได้
+        when(() => mockSessionCubit.setUser(any())).thenReturn(null);
+
+        final result = await useCase.getUserSession();
+
+        expect(result, Success(mockUser));
+        verify(() => mockUserRepository.getProfile()).called(1);
+        verify(() => mockSessionCubit.setUser(mockUser)).called(1);
+      },
+    );
+
+    test('returns Failure when repository fetch fails', () async {
+      const error = AppError(message: 'Server Error');
+      when(() => mockTokenVault.hasAccessToken()).thenAnswer((_) async => true);
+      when(() => mockSessionCubit.state).thenReturn(const SessionState());
+      when(
+        () => mockUserRepository.getProfile(),
+      ).thenAnswer((_) async => const Failure(error));
+
+      final result = await useCase.getUserSession();
+
+      expect(result, const Failure(error));
+      verify(() => mockUserRepository.getProfile()).called(1);
+      verifyNever(() => mockSessionCubit.setUser(any()));
+    });
+  });
+}
